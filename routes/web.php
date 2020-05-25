@@ -66,18 +66,13 @@ Route::post('getSize-one', 'FontEndController@getSize_one');
 
 
 
-                                Route::get('anyDataVendor', 'VendorController@anyData')->name('vendors.data');
-                                Route::get('vendors', 'VendorController@index');
-                                Route::post('vendor/store', 'VendorController@store');
-                                Route::get('getVendor/{id}', 'VendorController@getVendor');
-                                Route::delete('vendor/{id}', 'VendorController@destroy');
-                                Route::post('vendor/update', 'VendorController@updatevendor');
 
                                 Route::get('anyUser', 'UserController@anyData')->name('users.data');
                                 Route::get('users', 'UserController@index');
-                                Route::get('users/edit/{id}', 'UserController@getData');
+                                Route::get('user/edit/{id}', 'UserController@getData');
                                 Route::post('users/store', 'UserController@store');
-                                Route::delete('users/{id}', 'UserController@destroy');
+                                Route::delete('user/{id}', 'UserController@destroy');
+                                Route::get('user/status/{id}', 'UserController@status');
                                 Route::post('users/update', 'UserController@updateUser');
 
                                 Route::get('anyCategory', 'CategoryController@anyData')->name('categories.data');
@@ -86,6 +81,13 @@ Route::post('getSize-one', 'FontEndController@getSize_one');
                                 Route::post('categories/store', 'CategoryController@store');
                                 Route::delete('categories/{id}', 'CategoryController@destroy');
                                 Route::post('categories/update', 'CategoryController@updateData');
+
+
+
+                                Route::get('anyTables', 'TableController@anyData')->name('tables.data');
+                                Route::get('tables', 'TableController@index');
+                                Route::post('tables/store', 'TableController@store');
+                                Route::delete('tables/{id}', 'TableController@destroy');
 
 
                                 Route::get('anyColor', 'ColorController@anyData')->name('color.data');

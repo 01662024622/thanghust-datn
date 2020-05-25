@@ -61,7 +61,7 @@
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="{{ asset('admin/posts') }}" class="logo">
+    <a href="{{ asset('admin/products') }}" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>A</b>LT</span>
       <!-- logo for regular state and mobile devices -->
@@ -121,7 +121,7 @@
               <li>
                 <ul class="menu">
                   <li>
-                    <a href="{{ asset('admin/posts/browsingPosts') }}">
+                    <a href="#">
                       @if ($sumPost!==0)
                         {{-- expr --}}
                       <i class="fa fa-paste"></i> Have {{$sumPost}} New Posts has not been approved
@@ -269,23 +269,6 @@
           <a href="{{ asset('admin/users') }}">
             <i class="fa fa-users"></i> <span>Users</span>
             </span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ asset('admin/colors') }}">
-            <i class="fa fa-dashboard"></i> <span>Colors</span>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ asset('admin/sizes') }}">
-            <i class="fa fa-superpowers"></i> <span>Size</span>
-            </span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ asset('admin/vendors') }}">
-            <i class="fa fa-archive"></i> <span>Vendor</span>
           </a>
         </li>
         <li>

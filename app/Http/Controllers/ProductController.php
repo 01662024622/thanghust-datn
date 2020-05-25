@@ -7,13 +7,9 @@ use App\Http\Requests\ProductRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use Yajra\Datatables\Datatables;
 use App\Product;
-use App\Vendor;
-use App\Product_detail;
 use App\User;
 use App\Category;
 use App\Gallary_image;
-use App\Size;
-use App\Color;
 use Auth;
 class ProductController extends Controller
 {
@@ -21,23 +17,9 @@ class ProductController extends Controller
     	$currentUser= Auth::guard('admin')->user();
         $products= Product::get();
         $categories= Category::get();
-        $vendors= Vendor::get();
-        $colors= Color::get();
-    	$sizes= Size::get();
-    	// dd($currentUser);
-     //    $quantity=Product_detail::where('quantity','<=','0')->get();
-     //    $sumPost=Product_detail::where('quantity','<=','0')->count();
-     //    foreach ($quantity as $key => $value) {
-     //    $size=Size::where('id',$value['size_id'])->first();
-     //    $color=Color::where('id',$value['color_id'])->first();
-     //    $product[$key]=Product::where('code',$value['product_id'])->first();
-     //    $product[$key]['color']=$color;
-     //    $product[$key]['size']=$size;
-     //    }
-    	// $sumNotice=$product;
         $sumPost="0";
         $sumNotice="0";
-    	return view('products.index',['currentUser'=>$currentUser,'sumNotice'=>$sumNotice,'sumPost'=>$sumPost],['products'=>$products,'categories'=>$categories,'vendors'=>$vendors,'sizes'=>$sizes,'colors'=>$colors,]);
+    	return view('products.index',['currentUser'=>$currentUser,'sumNotice'=>$sumNotice,'sumPost'=>$sumPost],['products'=>$products,'categories'=>$categories]);
     }
     public function anyData(){
             // return Datatables::of(User::query())->make(true);
@@ -66,21 +48,20 @@ class ProductController extends Controller
         //->editColumn('brand_id', 'tung{{$category_id}}')
         //->editColumn('category_id', Category::where('id', '=',$category_id)->first()->name)
         ->setRowId('product-{{$id}}')
-        ->editColumn('sale_cost', '{{ number_format($sale_cost)}}')
-        ->editColumn('origin_cost', '{{ number_format($origin_cost)}}')
+        ->editColumn('cost', '{{ number_format($cost)}} VND')
         // ->rawColumns(['action'])
         ->make(true);
 }
-	public function plusData($id){
+	public function status($id){
         $product=Product::find($id);
-        $product['images']=Gallary_image::where('product_id',$id)->first();
-        $product_detail=Product_detail::where('product_id',$product['id'])->first();
-        if (!empty($product_detail)) {
-        $size=Size::where('id',$product_detail['size_id'])->get();
-        $product['size']=$size->size;
-        $color=Color::where('id',$product_detail['color_id'])->get();
-        $product['color']=$color->color;
+        if ($product->status==0) {
+            $product->status=1;
+            $product->save();
+        }else {
+             $product->status=0;
+            $product->save();
         }
+
         return response()->json($product);
     }
     public function getProduct($id){
@@ -96,13 +77,9 @@ class ProductController extends Controller
         return response()->json($data);
     }
     
-    public function store(ProductRequest $request) {
-        $vendor=$request->only(['vendor_id']);
-        $codeVendor=Vendor::where('id',$vendor)->first();
-        $data=$request->only(['name','description','content','sale_cost','origin_cost','category_id']);
-        $data['code']=$codeVendor['code'].'0'.time();
-        $data['slug']=str_slug($data['name']);
-        $data['vendor_id']=$codeVendor['id'];
+    public function store(Request $request) {
+        $data=$request->only(['name','description','content','cost','category_id']);
+        $data['slug']=str_slug($data['name'].time());
         $product=Product::create($data);
         foreach ($request['images'] as $key => $image) {
             $imageName= 'http://'.request()->getHttpHost().'/images/product/'.time().$key.'.'.$image->getClientOriginalExtension();
@@ -115,13 +92,10 @@ class ProductController extends Controller
         return $product;
     
     }
-    public function updateProduct(ProductUpdateRequest $request) {
+    public function updateProduct(Request $request) {
         $id=$request->only(['id']);
-        $vendor=$request->only(['vendor_id']);
-        $codeVendor=Vendor::where('id',$vendor)->first();
-        $data=$request->only(['name','description','content','sale_cost','origin_cost','category_id']);
+        $data=$request->only(['name','description','content','cost','category_id']);
         $data['slug']=str_slug($data['name']).time();
-        $data['vendor_id']=$codeVendor['id'];
         $boolean=Product::where('id',$id)->update($data);
         if ($boolean) {
         return Product::find($id)->first();

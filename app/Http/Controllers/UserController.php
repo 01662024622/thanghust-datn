@@ -20,67 +20,85 @@ class UserController extends Controller
 {
     public function index(){
         $currentUser= Auth::guard('admin')->user();
-    	$users= User::get();
+        $users= User::get();
     	// dd($currentUser);
-    	$sumNotice="0";
-    	$sumPost="0";
-    	return view('user.index',['currentUser'=>$currentUser,'sumNotice'=>$sumNotice,'sumPost'=>$sumPost],['users'=>$users]);
-	}
-	public function anyData(){	
-    
+        $sumNotice="0";
+        $sumPost="0";
+        return view('user.index',['currentUser'=>$currentUser,'sumNotice'=>$sumNotice,'sumPost'=>$sumPost],['users'=>$users]);
+    }
+    public function anyData(){	
+
         $users = User::select('users.*');
         return Datatables::of($users)
         ->addColumn('action', function ($user) {
             return'
-            <button type="button" class="btn btn-xs btn-info" data-toggle="modal" href="#showProduct"><i class="fa fa-eye" aria-hidden="true"></i></button>
-            <button type="button" class="btn btn-xs btn-warning"data-toggle="modal" onclick="getProduct('.$user['id'].')" href="#editUser"><i class="fa fa-pencil" aria-hidden="true"></i></button>
             <button type="button" class="btn btn-xs btn-danger" onclick="alDelete('.$user['id'].')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
         })
+        ->addColumn('status', function ($user) {
+            if ($user['status']==0) {
+               return'<label class="checkbox-inline"><input type="checkbox" id="togglechecked" onChange="setStatus('.$user['id'].')" data-toggle="toggle" data-size="xs"></label>';
+           }else {
+            return'<label class="checkbox-inline"><input type="checkbox" checked id="togglechecked" onChange="setStatus('.$user['id'].')" data-toggle="toggle" data-size="xs"></label>';
+        }
+
+    })
         ->editColumn('avata','<img src="{{$avata}}" style="width:100px;" class="img img-responsive"  alt="">')
-        ->rawColumns(['avata','action'])
+        ->rawColumns(['avata','action','status'])
         ->setRowId('user-{{$id}}')
         ->make(true);
-}
-	public function getData($id){
+    }
+    public function getData($id){
     	$users=User::find($id);
     	// $categories=Category::orderBy('id','DESC')->get();
     	return $users;
-	}
-	
-	public function destroy($id){
+    }
+    public function status($id){
+        $dt=User::find($id);
+        if ($dt->status==0) {
+            $dt->status=1;
+            $dt->save();
+        }else {
+           $dt->status=0;
+           $dt->save();
+       }
+
+       return response()->json($dt);
+   }
+
+   public function destroy($id){
 		// Product::find($id);
 		// $data=User::find($id);
-		$data=User::find($id)->delete();
-		return response()->json($data);
-	}
-	public function store(UserRequest $request) {
-        $imageName= '/images/users/userDefault.png';
-		if ($request->hasFile('avata')) {
-            $imageName= '/images/users/'.time().'.'.$request->avata->getClientOriginalExtension();
-            $request->avata->move(public_path('images/users'), $imageName);
-		}        
-        $data=$request->all();
-        $data['avata']=$imageName;
-        $data['password']=Hash::make($data['password']);
-        unset($data['image']);
-		$user= User::create($data);
-		 return $user;
-	}
-	public function updateUser(UserUpdateRequest $request) {
-        $data=$request->all();
-        unset($data['id']);
-		if ($request->hasFile('avata')) {
+      $data=User::find($id)->delete();
+      return response()->json($data);
+  }
+  public function store(UserRequest $request) {
+    $imageName= '/images/users/userDefault.png';
+    if ($request->hasFile('avata')) {
+        $imageName= '/images/users/'.time().'.'.$request->avata->getClientOriginalExtension();
+        $request->avata->move(public_path('images/users'), $imageName);
+    }        
+    $data=$request->all();
+    $data['avata']=$imageName;
+    $data['password']=Hash::make($data['password']);
+    unset($data['image']);
+    $user= User::create($data);
+    return $user;
+}
+public function updateUser(UserUpdateRequest $request) {
+    $data=$request->all();
+    unset($data['id']);
+    if ($request->hasFile('avata')) {
         $imageName= 'http://'.request()->getHttpHost().'/images/users/'.time().'.'.$request->image->getClientOriginalExtension();
         $request->image->move(public_path('images/users'), $imageName);
         $data['avata']=$imageName;
-		}
-        
-        $id=$request->only(['id']);
-        $boolean=User::find($id)->first()->update($data);
-        if ($boolean) {
-		return response()->json(['success'=>'201']);
-        }else{
-        	return response()->json(['error'=>'500']);
-        }
     }
+
+    $id=$request->only(['id']);
+    $boolean=User::find($id)->first()->update($data);
+    if ($boolean) {
+      return response()->json(['success'=>'201']);
+  }else{
+   return response()->json(['error'=>'500']);
+}
+}
 }

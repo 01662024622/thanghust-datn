@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
 use Yajra\Datatables\Datatables;
 use App\Product;
-use App\Vendor;
 use App\Category;
 use App\Product_detail;
 use App\User;
@@ -26,7 +25,7 @@ class OrderController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -38,7 +37,6 @@ class OrderController extends Controller
         $currentUser= Auth::guard('admin')->user();
         $products= Product::get();
         $categories= Category::get();
-        $vendors= Vendor::get();
         $colors= Color::get();
         $sizes= Size::get();
         // dd($currentUser);

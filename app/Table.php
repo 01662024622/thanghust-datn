@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Size extends Model
+class Table extends Model
 {
-     protected $fillable = [
-        'size',
+    protected $fillable = [
+        'code'
     ];
 }
