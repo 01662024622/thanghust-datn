@@ -1,33 +1,23 @@
-@extends('create')
-@section('content')
-    <table class="table table-bordered" id="users-table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Created At</th>
-                <th>Updated At</th>
-            </tr>
-        </thead>
-    </table>
-@stop
+@extends('layouts.app')
 
-@push('scripts')
-<script>
-$(function() {
-    $('#users-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: '{!! route('datatables.data') !!}',
-        columns: [
-            { data: 'id', name: 'id' },
-            { data: 'name', name: 'name' },
-            { data: 'email', name: 'email' },
-            { data: 'created_at', name: 'created_at' },
-            { data: 'updated_at', name: 'updated_at' }
-        ]
-    });
-});
-</script>
-@endpush
+@section('css')
+<style type="text/css" media="screen">
+    .table-container{
+        background-color: #449d44;
+        margin:30px;
+        color: white;
+        font-size: 30px;
+        font-weight: 900;
+        text-align: center;
+    }
+</style>
+@endsection
+@section('content')
+<div class="container">
+    <div class="row">
+        @foreach($tables as $table)
+        
+        @endforeach
+    </div>
+</div>
+@endsection

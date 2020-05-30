@@ -25,6 +25,7 @@
     <thead class="flg">
       <tr>
         <th>ID</th>
+        <th>Location</th>
         <th>Code</th>
         <th>Action</th>
       </tr>
@@ -76,6 +77,7 @@
       ajax: '{!! route('tables.data') !!}',
       columns: [
       { data: 'id', name: 'id' },
+      { data: 'location', name: 'location' },
       { data: 'code', name: 'code' },
       { data: 'action', name: 'action' },
       ]

@@ -16,6 +16,9 @@ class CreateTablesTable extends Migration
         Schema::create('tables', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code');
+            $table->string('location');
+            $table->integer('status')->default(0);
+            $table->integer('member')->default(2);
             $table->timestamps();
         });
     }

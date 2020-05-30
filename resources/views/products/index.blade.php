@@ -28,8 +28,9 @@
       <tr>
         <th>ID</th>
         <th>Name</th>
+        <th>Image</th>
         <th>Cost</th>
-        <th>Update</th>
+        <th>Created Date</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -63,7 +64,7 @@
      <div id="image_preview"></div>
      <div class="form-group">
       <label for="">Images</label>
-      <input type="file" id="files" class="form-control" name="file[]" multiple />
+      <input type="file" id="file" class="form-control" name="file" />
     </div>
 
   </div>                       
@@ -86,6 +87,34 @@
 </div>
 </div>
 {{-- edit product modal  --}}
+
+<!-- modal add quantity product -->
+<div class="modal fade" id="wareHousing">
+  <div class="modal-dialog" style="max-width: 700px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">This product are available: <span id="quantity"></span> </h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="quantity">Add Number Quantity</label>
+          <input class="form-control" type="number" id="quantity-number-add" name="number" value="0" style="float: left; width: 80%" placeholder="Add Number Quantity ...">
+          <button type="button" class="btn btn-xs btn-success fa fa-plus" style="float: right;width: 35px;height: 35px;" id="addQuantity"></button>
+        </div>
+        <input type="hidden" name="wid" id="wid">
+        <br>
+        <br>
+        <br>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{-- edit product modal  --}}
+
 
 <div class="modal fade" id="editProduct">
   <div class="modal-dialog">
@@ -116,7 +145,7 @@
       </div>
       <div class="form-group">
         <label for="">Images</label>
-        <input type="file" id="efiles" class="form-control" name="efiles[]" multiple />
+        <input type="file" id="efile" class="form-control" name="efiles" />
       </div>
 
     </div>                       
@@ -173,6 +202,7 @@
           columns: [
           { data: 'id', name: 'id' },
           { data: 'name', name: 'name' },
+          { data: 'image', name: 'image' },
           { data: 'cost', name: 'cost' },
           { data: 'updated_at', name: 'updated_at' },
           { data: 'action', name: 'action' },
@@ -192,7 +222,7 @@
         $('#StoreBtn').on('click',function(e){
           e.preventDefault();
           var content = CKEDITOR.instances.content.getData();
-          var files = document.getElementById('files').files;
+          var file = document.getElementById('file').files[0];
           
           var newPost = new FormData();
           newPost.append('name',$('#name').val());
@@ -200,11 +230,8 @@
           newPost.append('content',content);
           newPost.append('category_id',$('#category_id').val());
           newPost.append('cost',$('#cost').val());
+          newPost.append('image',file);
           
-          for (var i = 0; i < files.length; i++) {
-
-            newPost.append('images[]',files[i]);
-          }
           $.ajax({
             type:'post',
             url:"product/store",
@@ -277,7 +304,7 @@
         $('#UpdateBtn').on('click',function(e){
           e.preventDefault();
           var econtent = CKEDITOR.instances.econtent.getData();
-          var efiles = document.getElementById('efiles').files;
+          var efile = document.getElementById('efile').files[0];
           var updatePost = new FormData();
           updatePost.append('id',$('#eid').val());
           updatePost.append('name',$('#ename').val());
@@ -288,7 +315,7 @@
           console.log(updatePost);
           for (var i = 0; i < efiles.length; i++) {
 
-            updatePost.append('images[]',efiles[i]);
+            updatePost.append('image',efile);
           }  $.ajax({
             type:'post',
             url: "product/update",
@@ -485,6 +512,44 @@
     e.which == 8 || // delete key
     /[0-9]/.test(String.fromCharCode(e.which)); // numbers
   })
-</script>
 
-@endsection
+      function wareHousing(id){
+        console.log(id);
+        // $('#editPost').modal('show');
+
+        $.ajax({
+          type: "GET",
+          url: "{{ asset('admin/getProduct') }}/"+id,
+
+          success: function(response)
+          {
+            $('#quantity').text(response.quantity);     
+            $('#wid').val(response.id);     
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            toastr.error(thrownError);
+          }
+        });
+      }
+      $('#addQuantity').on('click',function(e){
+        var id = $('#wid').val();
+        $.ajax({
+          type:'post',
+          url: "/admin/product/add/quantity/"+id,
+
+          data:{
+            addNumber:$('#quantity-number-add').val()
+          },
+          dataType:'json',
+          success: function(response){
+            wareHousing(id);
+            $('#quantity-number-add').val(0);
+          toastr.success(response.name+' has been add quantity');
+      },  error: function (xhr, ajaxOptions, thrownError) {
+        toastr.error(thrownError);
+      }
+    })
+      })
+    </script>
+
+    @endsection

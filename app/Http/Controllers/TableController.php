@@ -43,7 +43,7 @@ class TableController extends Controller
 
 
 	public function store(Request $request) {
-		$data=$request->only(['code']);
+		$data=$request->all();
 		$res=Table::create($data);
 		return $res;
 	}

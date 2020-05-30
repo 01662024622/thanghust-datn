@@ -32,6 +32,11 @@ class ProductController extends Controller
     // ->join('sizes', 'product-details.size_id', '=', 'sizes.id');
         $products = Product::select('products.*');
         return Datatables::of($products)
+
+        ->editColumn('image', function ($product) {
+            return '<image src="'.$product['image'].'" style="width:100px;hieght:auto" />';
+            
+        })
         ->addColumn('action', function ($product) {
             return'
             <button type="button" class="btn btn-xs btn-success fa fa-plus" data-toggle="modal" href="#wareHousing" onclick="wareHousing('.$product['id'].')" ></button>
@@ -49,7 +54,7 @@ class ProductController extends Controller
         //->editColumn('category_id', Category::where('id', '=',$category_id)->first()->name)
         ->setRowId('product-{{$id}}')
         ->editColumn('cost', '{{ number_format($cost)}} VND')
-        // ->rawColumns(['action'])
+        ->rawColumns(['action','image'],)
         ->make(true);
 }
 	public function status($id){
@@ -70,6 +75,14 @@ class ProductController extends Controller
         $product['images']=Gallary_image::where('product_id',$id)->get();
         return response()->json($product);
     }
+    public function addQuantity(Request $request, $id){
+        $product=Product::find($id);
+        // $categories=Category::orderBy('id','DESC')->get();
+        $product['quantity']+=$request->addNumber;
+        $product->save();
+        return response()->json($product);
+    }
+
     public function destroy($id){
         // Product::find($id);
 
@@ -80,15 +93,15 @@ class ProductController extends Controller
     public function store(Request $request) {
         $data=$request->only(['name','description','content','cost','category_id']);
         $data['slug']=str_slug($data['name'].time());
-        $product=Product::create($data);
-        foreach ($request['images'] as $key => $image) {
-            $imageName= 'http://'.request()->getHttpHost().'/images/product/'.time().$key.'.'.$image->getClientOriginalExtension();
+        if ($request->has('image')) {
+            $imageName = time().'.'.$request->image->extension();  
 
-        $image->move(public_path('images/product'), $imageName);
-        $gallary['link']=$imageName;
-        $gallary['product_id']=$product['id'];
-        $data=Gallary_image::create($gallary);
+            $request->image->move(public_path('images/product'), $imageName);
+            $data['image']='/images/product/'.$imageName;
         }
+        $product=Product::create($data);
+
+        
         return $product;
     
     }
