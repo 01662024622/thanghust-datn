@@ -1,14 +1,14 @@
 @extends('layouts.adminheader')
 @section('css')
 <style type="text/css" media="screen">
-.paginate_button{
-  color: #fff;
-  background-color: #e68f35;
-  border-color: #d43f3a;
-  padding: 6px;
-  border-radius: 5px;
-  margin: 2px;
-}
+  .paginate_button{
+    color: #fff;
+    background-color: #e68f35;
+    border-color: #d43f3a;
+    padding: 6px;
+    border-radius: 5px;
+    margin: 2px;
+  }
 </style>
 
 <script src="https://cdn.ckeditor.com/4.8.0/standard/ckeditor.js"></script>
@@ -27,6 +27,7 @@
         <th>ID</th>
         <th>Location</th>
         <th>Code</th>
+        <th>Member</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -47,70 +48,84 @@
             <label class="control-label" for="phone">Code:</label>        
             <input type="text" name="code"  class="form-control" id="code" value="" placeholder="">
           </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" id="StoreBtn" class="btn btn-primary">Save changes</button>
-          </div> 
-        </form>
+          <div class="form-group">
+            <label for="sel1">Location:</label>
+            <select class="form-control" id="location">
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+            <div class="form-group">
+              <label class="control-label" for="phone">Member:</label>        
+              <input type="text" name="member"  class="form-control" id="member" value="" placeholder="">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" id="StoreBtn" class="btn btn-primary">Save changes</button>
+            </div> 
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
-@endsection
-@section('js')
+  @endsection
+  @section('js')
 
-{{-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> --}}
-<script type="text/javascript" charset="utf-8">
+  {{-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> --}}
+  <script type="text/javascript" charset="utf-8">
 
-  $(function () {
+    $(function () {
 
-    $.ajaxSetup({
+      $.ajaxSetup({
 
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      }
-    });
-    var dataTable=$('#users-table').DataTable({
-      processing: true,
-      serverSide: true,
-      ajax: '{!! route('tables.data') !!}',
-      columns: [
-      { data: 'id', name: 'id' },
-      { data: 'location', name: 'location' },
-      { data: 'code', name: 'code' },
-      { data: 'action', name: 'action' },
-      ]
-    });
-    $('#StoreBtn').on('click',function(e){
-      e.preventDefault();
-      console.log($('#name').val());
-      $.ajax({
-        type:'post',
-        url:"{{asset('admin/tables/store')}}",
-        data:{
-          code:$('#code').val(),
-        },
-        success:function(response){
-         console.log(response);
-         setTimeout(function () {
-           toastr.success('has been added');
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+      var dataTable=$('#users-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{!! route('tables.data') !!}',
+        columns: [
+        { data: 'id', name: 'id' },
+        { data: 'location', name: 'location' },
+        { data: 'code', name: 'code' },
+        { data: 'member', name: 'member' },
+        { data: 'action', name: 'action' },
+        ]
+      });
+      $('#StoreBtn').on('click',function(e){
+        e.preventDefault();
+        console.log($('#name').val());
+        $.ajax({
+          type:'post',
+          url:"{{asset('admin/tables/store')}}",
+          data:{
+            code:$('#code').val(),
+            location:$('#location').val(),
+            member:$('#member').val(),
+          },
+          success:function(response){
+           console.log(response);
+           setTimeout(function () {
+             toastr.success('has been added');
 
                   // 
                 },1000);
 
-                $('#create').modal('hide');
-                dataTable.ajax.reload();
-              }, error: function (xhr, ajaxOptions, thrownError) {
-                toastr.error(xhr.responseJSON.message);
+           $('#create').modal('hide');
+           dataTable.ajax.reload();
+         }, error: function (xhr, ajaxOptions, thrownError) {
+          toastr.error(xhr.responseJSON.message);
 
-              },
+        },
 
-            })
-    });
+      })
+      });
 
 
-  })
+    })
 
 
 

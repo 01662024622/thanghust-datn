@@ -276,6 +276,11 @@
             <i class="fa fa-cart-arrow-down"></i> <span>Order</span>
           </a>
         </li>
+        <li>
+          <a href="{{ asset('admin/tables') }}">
+            <i class="fa fa-cart-arrow-down"></i> <span>Tables</span>
+          </a>
+        </li>
       </ul>
     </section>
     <!-- /.sidebar -->

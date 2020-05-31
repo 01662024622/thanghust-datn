@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'destroy_on_logout' => true,
+    'destroy_on_logout' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +56,7 @@ return [
 
     'format' => [
 
-        'decimals' => 2,
+        'decimals' => 0,
 
         'decimal_point' => '.',
 

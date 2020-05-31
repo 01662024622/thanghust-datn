@@ -24,10 +24,16 @@ Route::middleware('auth')->group(function(){
 
 
 
-        Route::middleware('logined')->group(function(){
-                Route::get('/', 'WorkingController@index');
-                Route::get('/location/{location}', 'WorkingController@location');
-        });
+Route::middleware('logined')->group(function(){
+        Route::get('/', 'WorkingController@index');
+        Route::get('/location/{location}', 'WorkingController@location');
+
+        Route::get('/table/{table}', 'WorkingController@table');
+        Route::get('/add/{table}/{id}', 'WorkingController@cart');
+        Route::get('/status/stable/user/{id}', 'WorkingController@tableStatus');
+
+        Route::get('/anyDataUser/{category}/{tale}', 'ProductController@anyDataUser')->name('datatables.anyDataUser');
+});
 
 
 

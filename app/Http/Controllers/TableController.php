@@ -13,12 +13,12 @@ class TableController extends Controller
     public function index(){
         $currentUser= Auth::guard('admin')->user();
     	// dd($currentUser);
-    	$sumNotice="0";
-    	$sumPost="0";
-    	return view('tables.index',['currentUser'=>$currentUser,'sumNotice'=>$sumNotice,'sumPost'=>$sumPost]);
-	}
+        $sumNotice="0";
+        $sumPost="0";
+        return view('tables.index',['currentUser'=>$currentUser,'sumNotice'=>$sumNotice,'sumPost'=>$sumPost]);
+    }
 
-	public function anyData(){
+    public function anyData(){
         $tables = Table::select('tables.*');
         return Datatables::of($tables)
         ->addColumn('action', function ($category) {
@@ -29,24 +29,24 @@ class TableController extends Controller
         })
         ->setRowId('category-{{$id}}')
         ->make(true);
-}
+    }
 
 
 
-	public function destroy($id){
+    public function destroy($id){
 		// Product::find($id);
 
-		$data=Table::find($id)->delete();
-		return response()->json($data);
-	}
+      $data=Table::find($id)->delete();
+      return response()->json($data);
+  }
 
 
 
-	public function store(Request $request) {
-		$data=$request->all();
-		$res=Table::create($data);
-		return $res;
-	}
+  public function store(Request $request) {
+      $data=$request->all();
+      $res=Table::create($data);
+      return $res;
+  }
 
 
 
