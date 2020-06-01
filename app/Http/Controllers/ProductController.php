@@ -71,9 +71,9 @@ class ProductController extends Controller
         })
         ->addColumn('action', function ($product) {
             $rowId = $cart = Cart::content()->where('id',$product['id'])->where('options.table',$product['table_code'])->first();
-            $number = '<input type="number" disable value="0" style="width:40px; float:left;margin:0 5px">';
+            $number = '<input type="number" disabled value="0" style="width:40px; float:left;margin:0 5px">';
             if ($rowId!=null) {
-                $number = '<input type="number" disable value="'.$rowId->qty.'" style="width:40px; float:left;margin:0 5px">';
+                $number = '<input type="number" disabled value="'.$rowId->qty.'" style="width:40px; float:left;margin:0 5px">';
             }
             return $number.'
             <button type="button" class="btn btn-xs btn-success fa fa-plus" data-toggle="modal" href="#wareHousing" onclick="wareHousing('.$product['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
@@ -143,18 +143,16 @@ class ProductController extends Controller
         }else{
             return response()->json(['error'=>'500']);
         }
-        if (!isempty($request['images'])) {
+        if (!isempty($request['image'])) {
             # code...
             foreach ($request['images'] as $key => $image) {
-                $imageName= request()->getHttpHost().'/images/product/'.time().$key.'.'.$image->getClientOriginalExtension();
+               $imageName = time().'.'.$request->image->extension();  
 
-            $image->move(public_path('images/product'), $imageName);
-            $gallary['link']=$imageName;
-            $gallary['product_id']=$product['id'];
-            $data=Gallary_image::create($gallary);
+            $request->image->move(public_path('images/product'), $imageName);
+            $data['image']='/images/product/'.$imageName;
             }
         }
-        $boolean=Post::find($id)->first()->update($data);
+        $boolean=Post::find($id)->update($data);
         if ($boolean) {
         return Post::find($id)->first();
         }else{

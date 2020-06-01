@@ -311,12 +311,11 @@
           updatePost.append('description',$('#edescription').val());
           updatePost.append('content',econtent);
           updatePost.append('category_id',$('#ecategory_id').val());
-          updatePost.append('ecost',$('#ecost').val());
+          updatePost.append('cost',$('#ecost').val());
           console.log(updatePost);
-          for (var i = 0; i < efiles.length; i++) {
 
-            updatePost.append('image',efile);
-          }  $.ajax({
+          updatePost.append('image',efile);
+          $.ajax({
             type:'post',
             url: "product/update",
 
@@ -544,11 +543,11 @@
           success: function(response){
             wareHousing(id);
             $('#quantity-number-add').val(0);
-          toastr.success(response.name+' has been add quantity');
-      },  error: function (xhr, ajaxOptions, thrownError) {
-        toastr.error(thrownError);
-      }
-    })
+            toastr.success(response.name+' has been add quantity');
+          },  error: function (xhr, ajaxOptions, thrownError) {
+            toastr.error(thrownError);
+          }
+        })
       })
     </script>
 
