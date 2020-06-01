@@ -15,9 +15,9 @@ class CreateWaitsTable extends Migration
     {
         Schema::create('waits', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('table_code');
+            $table->integer('table_id');
             $table->integer('product_id');
-            $table->integer('status');
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

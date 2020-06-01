@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Table;
 use App\Category;
 use App\Product;
+use App\Order;
+use App\Wait;
 use Cart;
+use DB;
 
 class WorkingController extends Controller
 {
@@ -14,10 +17,17 @@ class WorkingController extends Controller
 
 		$locations= Table::select('location')->distinct()->get();
 		if ($location!=null) {
-			$tables = Table::where('location',$location)->get();
-		}else{
+			$tables = Table::where('tables.location',$location)->leftJoin('orders', function ($join) {
+				$join->on('tables.id', '=', 'orders.table_id');
+				$join->on('orders.status', DB::raw(0));
+			})->select('tables.*','orders.name','orders.phone')->get();
 
-			$tables = Table::where('location',$locations[0]['location'])->get();
+
+		}else{
+			$tables = Table::where('tables.location',$locations[0]['location'])->leftJoin('orders', function ($join) {
+				$join->on('tables.id', '=', 'orders.table_id');
+				$join->on('orders.status', DB::raw(0));
+			})->select('tables.*,orders.name,orders.phone,orders.status as statusorder')->get();
 		}
 		$page="location";
 		return view('home',['locations'=>$locations,'categories'=>[],'tables'=>$tables,'page'=>$page,'tableinfor'=>null]);
@@ -34,11 +44,12 @@ class WorkingController extends Controller
 		$categories= Category::all();
 		if ($request->has('category')) {
 			
-		$categoryinfor = Category::where('id',$request->category)->first();
+			$categoryinfor = Category::where('id',$request->category)->first();
 		}else {
 			$categoryinfor= $categories->first();
 		}
 		$table = Table::where('code',$table)->first();
+		// return $table;
 		// return $table;
 		$cart = Cart::content()->where('options.table',$table->code);
 		$page="table";
@@ -64,18 +75,25 @@ class WorkingController extends Controller
 			
 		];
 		Cart::add($cartInfo);
-
+		$data['product_id']=$product->id;
+		$data['table_id']=$table->id;
+		Wait::create($data);
 		// $cart = Cart::content()->where('id',3)->where('options.table','A52');
 
 		return 'true';
 
 	}
-	public function tableStatus($id)
+	public function tableStatus(Request $request,$code)
 	{
-		$table = Table::where('id',$id)->first();
+		$table = Table::where('code',$id)->first();
 		if ($table->status==0) {
+			$order = $request->only(['name','phone','note']);
+			$order['user_id']=Auth::id();
+			$order['table_id']=$table->id;
+			$order=Order::create($order);
 			$table->status=1;
 		}else {
+			Order::where('table_id',$table->id)->where('status',0)->delete();
 			$table->status=0;
 		}
 		$table->save();

@@ -19,24 +19,24 @@
         @if ($table['status']==0)
         <a href="/table/{{$table->code}}" title="" class="col-xs-6 col-sm-4 table-container" >{{$table->code}}
 
-            <br> 
-            <br> 
+            <br> {{$table['name']}}-{{$table['phone']}}
             <br> 
             {{$table->member}}
         </a>
         @elseif ($table['status'] == 1)
-         <a href="/table/{{$table->code}}" title="" class="col-xs-6 col-sm-4 table-container" style="background-color: #00c0ef;">{{$table->code}}
+        <a href="/table/{{$table->code}}" title="" class="col-xs-6 col-sm-4 table-container" style="background-color: #00c0ef;">{{$table->code}}
 
             <br> 
-            <br> 
+            {{$table['name']}}-{{$table['phone']}}
             <br> 
             {{$table->member}}
         </a>
         @else
-         <a href="/table/{{$table->code}}" title="" class="col-xs-6 col-sm-4 table-container" style="background-color: #ec971f;">{{$table->code}}
+        <a href="/table/{{$table->code}}" title="" class="col-xs-6 col-sm-4 table-container" style="background-color: #ec971f;">{{$table->code}}
 
             <br> 
-            <br> 
+            {{$table['name']}}-{{$table['phone']}}
+            
             <br> 
             {{$table->member}}
         </a>

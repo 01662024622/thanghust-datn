@@ -92,8 +92,9 @@
           <!-- Messages: style can be found in dropdown.less-->
           @if($tableinfor!=null)
           @if($tableinfor->status==0)
+          {{$tableinfor->status}}
           <li class="dropdown messages-menu">
-            <button onclick="setStatus({{$tableinfor->id}})" id="pending-bottom">
+            <button id="pending-bottom" data-toggle="modal" href="#pending-modal">
               <i class="fa fa-play"></i>
             </button>
 
@@ -476,26 +477,7 @@
     var output = document.getElementById('imgCreate');
     output.src = URL.createObjectURL(event.target.files[0]);
   };
-      function setStatus(id){
-         $.ajax({
-          type: "GET",
-          url: "/status/stable/user/"+id,
 
-          success: function(response)
-          {
-            if(response.status==0){
-              $('#pending-bottom').html('<i class="fa fa-play"></i>');
-            }else {
-              $('#pending-bottom').html('<i class="fa fa-pause-circle"></i>');
-            }
-
-          },
-          error: function (xhr, ajaxOptions, thrownError) {
-            toastr.error(thrownError);
-          }
-        });
-
-      }
 </script>
 </body>
 </html>

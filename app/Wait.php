@@ -4,9 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model
+class Wait extends Model
 {
     protected $fillable = [
-        'note','table_id','user_id','total','name','phone','status'
+        'table_id','product_id','status',
     ];
+    protected $table= "waits";
 }
