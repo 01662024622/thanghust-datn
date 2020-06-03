@@ -33,6 +33,9 @@ Route::middleware('logined')->group(function(){
         Route::post('/status/stable/user/{code}', 'WorkingController@tableStatus');
 
         Route::get('/anyDataUser/{category}/{tale}', 'ProductController@anyDataUser')->name('datatables.anyDataUser');
+
+        Route::get('/anyData/waits/table/{id}', 'WorkingController@dataWait')->name('datatables.waits');
+        Route::get('/anyData/bill/table/{id}', 'WorkingController@dataBill')->name('datatables.bills');
 });
 
 

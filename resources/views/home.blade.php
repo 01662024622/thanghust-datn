@@ -19,7 +19,7 @@
         @if ($table['status']==0)
         <a href="/table/{{$table->code}}" title="" class="col-xs-6 col-sm-4 table-container" >{{$table->code}}
 
-            <br> {{$table['name']}}-{{$table['phone']}}
+            <br> <span style="font-size: 10px">{{$table['name']}} - {{$table['phone']}} - {{$table['note']}}</span>
             <br> 
             {{$table->member}}
         </a>
@@ -27,7 +27,7 @@
         <a href="/table/{{$table->code}}" title="" class="col-xs-6 col-sm-4 table-container" style="background-color: #00c0ef;">{{$table->code}}
 
             <br> 
-            {{$table['name']}}-{{$table['phone']}}
+            <span style="font-size: 10px">{{$table['name']}} - {{$table['phone']}} - {{$table['note']}}</span>
             <br> 
             {{$table->member}}
         </a>
@@ -35,7 +35,7 @@
         <a href="/table/{{$table->code}}" title="" class="col-xs-6 col-sm-4 table-container" style="background-color: #ec971f;">{{$table->code}}
 
             <br> 
-            {{$table['name']}}-{{$table['phone']}}
+            <span style="font-size: 10px">{{$table['name']}} - {{$table['phone']}} - {{$table['note']}}</span>
             
             <br> 
             {{$table->member}}

@@ -17,6 +17,7 @@ class CreateWaitsTable extends Migration
             $table->increments('id');
             $table->integer('table_id');
             $table->integer('product_id');
+            $table->integer('quantity')->default(1);
             $table->integer('status')->default(0);
             $table->timestamps();
         });

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Wait extends Model
 {
     protected $fillable = [
-        'table_id','product_id','status',
+        'table_id','product_id','status','quantity'
     ];
     protected $table= "waits";
 }

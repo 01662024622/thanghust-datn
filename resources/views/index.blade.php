@@ -28,25 +28,69 @@
   </table>
 </div>
 
+{{-- ############## modal cart table#####################--}}
+
 <div class="modal fade" id="bill-modal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Modal title</h4>
+        <h4 class="modal-title">Cart</h4>
       </div>
-      
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" id="set-status" class="btn btn-primary">Save changes</button>
-      </div>
+      <div class="modal-body">
+       <table class="table table-bordered" id="bill-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Image</th>
+            <th>Cost</th>
+            <th>Quantity</th>
+          </tr>
+        </thead>
+      </table>
+
+    </div>                       
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" id="set-status" class="btn btn-primary">
+      Payment Proposal</button>
     </div>
+  </div>
+</div>
+</div>
 
-  </div>    
-</div>                   
 
+{{-- ############## modal cart table#####################--}}
 
+<div class="modal fade" id="wait-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Waits</h4>
+      </div>
+      <div class="modal-body">
+       <table class="table table-bordered" id="wait-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Image</th>
+            <th>Cost</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+      </table>
 
+    </div>                       
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" id="set-status" class="btn btn-primary">Save changes</button>
+    </div>
+  </div>
+</div>
+</div>
 {{-- ############## modal pending table#####################--}}
 
 <div class="modal fade" id="pending-modal">
@@ -116,6 +160,7 @@
           success: function(response)
           {
             tableData.ajax.reload();
+            $('#cover-pending').hide();
             $('#pending-bottom').html('');
           },
           error: function (xhr, ajaxOptions, thrownError) {
@@ -127,7 +172,7 @@
         event.preventDefault();
         $.ajax({
           type: "POST",
-          url: "/status/stable/user/{{$tableinfor->code}}",
+          url: "/status/stable/user/{{$tableinfor->id}}",
           data:{
             name:$('#name').val(),
             phone:$('#phone').val(),
@@ -136,17 +181,67 @@
           dataType:'json',
           success: function(response)
           {
-            if(response.status==0){
-              $('#pending-bottom').html('<i class="fa fa-play"></i>');
-            }else {
-              $('#pending-bottom').html('<i class="fa fa-pause-circle"></i>');
-            }
-
+            location.reload();
           },
           error: function (xhr, ajaxOptions, thrownError) {
             toastr.error(thrownError);
           }
         });
       });
-    </script>
-    @endsection
+      function setStatus(id) {
+       $.ajax({
+        type: "POST",
+        url: "/status/stable/user/{{$tableinfor->id}}",
+        data:{
+        },
+        dataType:'json',
+        success: function(response)
+        {
+          location.reload();
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+          toastr.error(thrownError);
+        }
+      });
+     }
+
+     var waits;
+     var bills;
+     function getDataWait() {
+       waits = $('#wait-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '/anyData/waits/table/{{$tableinfor->id}}',
+        columns: [
+        { data: 'id', name: 'id' },
+        { data: 'name', name: 'name' },
+        { data: 'image', name: 'image' },
+        { data: 'cost', name: 'cost' },
+    // { data: 'quantity', name: 'quantity' },
+    { data: 'action', name: 'action' },
+    ],
+    "columnDefs": [
+    { "width": "65px", "targets": 4 }
+    ]
+  });
+     }
+     function getDataBill() {
+       bills = $('#bill-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '/anyData/bill/table/{{$tableinfor->id}}',
+        columns: [
+        { data: 'id', name: 'id' },
+        { data: 'name', name: 'name' },
+        { data: 'image', name: 'image' },
+        { data: 'cost', name: 'cost' },
+        { data: 'quantity', name: 'quantity' },
+    // { data: 'action', name: 'action' },
+    ],
+    "columnDefs": [
+    { "width": "65px", "targets": 4 }
+    ]
+  });
+     }
+   </script>
+   @endsection

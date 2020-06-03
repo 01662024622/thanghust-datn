@@ -93,7 +93,7 @@
           @if($tableinfor!=null)
           @if($tableinfor->status==0)
           {{$tableinfor->status}}
-          <li class="dropdown messages-menu">
+          <li class="dropdown messages-menu" id="cover-pending">
             <button id="pending-bottom" data-toggle="modal" href="#pending-modal">
               <i class="fa fa-play"></i>
             </button>
@@ -101,8 +101,8 @@
           </li>
           @endif
           @if($tableinfor->status==1)
-          <li class="dropdown messages-menu">
-            <button onclick="setStatus({{$tableinfor->id}})" id="pending-bottom">
+          <li class="dropdown messages-menu" id="cover-pending">
+            <button onclick="setStatus({{$tableinfor->id}})">
               <i class="fa fa-pause-circle"></i>
             </button>
 
@@ -111,14 +111,14 @@
           @endif
           <!-- Notifications: style can be found in dropdown.less -->
           <li class="dropdown notifications-menu">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <button  class="dropdown-toggle" data-toggle="modal" href='#wait-modal' onclick="getDataWait()">
               <i class="fa fa-bell-o"></i>
 
-            </a>
+            </button>
           </li>
           <!-- Tasks: style can be found in dropdown.less -->
           <li class="dropdown tasks-menu">
-            <button  class="dropdown-toggle" data-toggle="modal" href='#bill-modal'>
+            <button  class="dropdown-toggle" data-toggle="modal" href='#bill-modal' onclick="getDataBill()">
               <i class="fa fa-shopping-cart"></i>
             </button>
 

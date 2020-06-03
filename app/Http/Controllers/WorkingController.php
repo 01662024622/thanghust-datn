@@ -7,10 +7,12 @@ use App\Table;
 use App\Category;
 use App\Product;
 use App\Order;
+use App\OrderProduct;
 use App\Wait;
 use Cart;
 use DB;
-
+use Auth;
+use Yajra\Datatables\Datatables;
 class WorkingController extends Controller
 {
 	public function location($location){
@@ -20,14 +22,14 @@ class WorkingController extends Controller
 			$tables = Table::where('tables.location',$location)->leftJoin('orders', function ($join) {
 				$join->on('tables.id', '=', 'orders.table_id');
 				$join->on('orders.status', DB::raw(0));
-			})->select('tables.*','orders.name','orders.phone')->get();
+			})->select('tables.*','orders.name','orders.phone','orders.note')->get();
 
 
 		}else{
 			$tables = Table::where('tables.location',$locations[0]['location'])->leftJoin('orders', function ($join) {
 				$join->on('tables.id', '=', 'orders.table_id');
 				$join->on('orders.status', DB::raw(0));
-			})->select('tables.*,orders.name,orders.phone,orders.status as statusorder')->get();
+			})->select('tables.*','orders.name','orders.phone','orders.note')->get();
 		}
 		$page="location";
 		return view('home',['locations'=>$locations,'categories'=>[],'tables'=>$tables,'page'=>$page,'tableinfor'=>null]);
@@ -60,6 +62,12 @@ class WorkingController extends Controller
 	{
 		// Cart::destroy();
 		$table = Table::where('code',$table)->first();
+		$order = Order::where('table_id',$table->id)->where('status',0)->first();
+		if ($order==null) {
+			$orderReq['table_id']=$table->id;
+			$orderReq['user_id']=Auth::id();
+			Order::create($orderReq);
+		}
 		if ($table->status!=2) {
 			$table->status=2;
 			$table->save();
@@ -75,17 +83,23 @@ class WorkingController extends Controller
 			
 		];
 		Cart::add($cartInfo);
-		$data['product_id']=$product->id;
-		$data['table_id']=$table->id;
-		Wait::create($data);
-		// $cart = Cart::content()->where('id',3)->where('options.table','A52');
+		
+		$waits = Wait::where('product_id',$product->id)->where('table_id',$table->id)->first();
+		if ($waits != null) {
+			$waits->quantity=$waits->quantity+1;
+			$waits->save();
+		}else {
+			$data['product_id']=$product->id;
+			$data['table_id']=$table->id;
+			Wait::create($data);
+		}
 
 		return 'true';
 
 	}
-	public function tableStatus(Request $request,$code)
+	public function tableStatus(Request $request,$id)
 	{
-		$table = Table::where('code',$id)->first();
+		
 		if ($table->status==0) {
 			$order = $request->only(['name','phone','note']);
 			$order['user_id']=Auth::id();
@@ -99,4 +113,64 @@ class WorkingController extends Controller
 		$table->save();
 		return $table;
 	}
+	public function dataWait($id){
+		$waits = Wait::where('table_id',$id)->select('waits.*');
+        return Datatables::of($waits)
+        ->addColumn('image', function ($data) {
+        	$product=Product::find($data['product_id']);
+            return '<image src="'.$product['image'].'" style="width:100px;hieght:auto" />';
+            
+        })
+        ->addColumn('action', function ($data) {
+            return '<input type="number" disabled value="'.$data['quantity'].'" style="width:40px; float:left;margin:0 5px">
+            <button type="button" class="btn btn-xs btn-success fa fa-check" onclick="alDeleteWait('.$data['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
+            ';
+            
+        })
+        ->addColumn('cost',  function ($data) {
+        	$product=Product::find($data['product_id']);
+            return number_format($product->cost) .' VND';
+            
+        })
+
+        ->addColumn('name',  function ($data) {
+        	$product=Product::find($data['product_id']);
+            return $product->name;
+            
+        })
+        ->setRowId('product-{{$id}}')
+        ->rawColumns(['action','image'],)
+        ->make(true);
+}
+
+	public function dataBill($id){
+		$order = Order::where('table_id',$id)->where('status',0)->first();
+		$datas =OrderProduct::where('oder_id',$order->id)->select('order_product.*');
+        return Datatables::of($datas)
+        ->addColumn('image', function ($data) {
+        	$product=Product::find($data['product_id']);
+            return '<image src="'.$product['image'].'" style="width:100px;hieght:auto" />';
+            
+        })
+        ->addColumn('action', function ($data) {
+            return '<input type="number" disabled value="'.$data['quantity'].'" style="width:40px; float:left;margin:0 5px">
+            <button type="button" class="btn btn-xs btn-success fa fa-check" onclick="alDeleteWait('.$data['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
+            ';
+            
+        })
+        ->addColumn('cost',  function ($data) {
+        	$product=Product::find($data['product_id']);
+            return number_format($product->cost) .' VND';
+            
+        })
+
+        ->addColumn('name',  function ($data) {
+        	$product=Product::find($data['product_id']);
+            return $product->name;
+            
+        })
+        ->setRowId('product-{{$id}}')
+        ->rawColumns(['action','image'],)
+        ->make(true);
+}
 }
