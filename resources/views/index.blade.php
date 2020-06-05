@@ -53,7 +53,7 @@
     </div>                       
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      <button type="button" id="set-status" class="btn btn-primary">
+      <button type="button" id="payment-proposal" class="btn btn-primary">
       Payment Proposal</button>
     </div>
   </div>
@@ -86,7 +86,6 @@
     </div>                       
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      <button type="button" id="set-status" class="btn btn-primary">Save changes</button>
     </div>
   </div>
 </div>
@@ -208,6 +207,9 @@
      var waits;
      var bills;
      function getDataWait() {
+      if(waits!=null){
+        waits.ajax.reload();
+      }else{
        waits = $('#wait-table').DataTable({
         processing: true,
         serverSide: true,
@@ -225,8 +227,15 @@
     ]
   });
      }
-     function getDataBill() {
-       bills = $('#bill-table').DataTable({
+
+   }
+   function getDataBill() {
+
+
+    if(bills!=null){
+      bills.ajax.reload();
+    }else{
+      bills = $('#bill-table').DataTable({
         processing: true,
         serverSide: true,
         ajax: '/anyData/bill/table/{{$tableinfor->id}}',
@@ -242,6 +251,35 @@
     { "width": "65px", "targets": 4 }
     ]
   });
-     }
-   </script>
-   @endsection
+    }
+  }
+  function alDeleteWait(id){
+    $.ajax({
+      type: "GET",
+      url: "/pay/product/"+id,
+      success: function(response)
+      {
+        waits.ajax.reload();
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        toastr.error(thrownError);
+      }
+    });
+  }
+ $('#payment-proposal').on('click', function(event) {
+  event.preventDefault();
+  $.ajax({
+    type: "GET",
+    url: "/payment/proposal/{{$tableinfor->id}}",
+    success: function(response)
+    {
+      location.reload();
+    },
+    error: function (xhr, ajaxOptions, thrownError) {
+      toastr.error(thrownError);
+    }
+  });
+});
+
+</script>
+@endsection

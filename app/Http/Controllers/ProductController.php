@@ -16,12 +16,12 @@ use DB;
 class ProductController extends Controller
 {
     public function index(){
-    	$currentUser= Auth::guard('admin')->user();
+        $currentUser= Auth::guard('admin')->user();
         $products= Product::get();
         $categories= Category::get();
         $sumPost="0";
         $sumNotice="0";
-    	return view('products.index',['currentUser'=>$currentUser,'sumNotice'=>$sumNotice,'sumPost'=>$sumPost],['products'=>$products,'categories'=>$categories]);
+        return view('products.index',['currentUser'=>$currentUser,'sumNotice'=>$sumNotice,'sumPost'=>$sumPost],['products'=>$products,'categories'=>$categories]);
     }
     public function anyData(){
             // return Datatables::of(User::query())->make(true);
@@ -58,9 +58,9 @@ class ProductController extends Controller
         ->editColumn('cost', '{{ number_format($cost)}} VND')
         ->rawColumns(['action','image'],)
         ->make(true);
-}
+    }
 
- public function anyDataUser($category,$table){
+    public function anyDataUser($category,$table){
 
         $products = Product::where('category_id',$category)->select('products.*',DB::raw('"'.$table .'"'.' as table_code'));
         return Datatables::of($products)
@@ -84,88 +84,80 @@ class ProductController extends Controller
         ->editColumn('cost', '{{ number_format($cost)}} VND')
         ->rawColumns(['action','image'],)
         ->make(true);
-}
-	public function status($id){
+    }
+    public function status($id){
         $product=Product::find($id);
         if ($product->status==0) {
             $product->status=1;
             $product->save();
         }else {
-             $product->status=0;
-            $product->save();
-        }
+         $product->status=0;
+         $product->save();
+     }
 
-        return response()->json($product);
-    }
-    public function getProduct($id){
-        $product=Product::find($id);
+     return response()->json($product);
+ }
+ public function getProduct($id){
+    $product=Product::find($id);
         // $categories=Category::orderBy('id','DESC')->get();
-        $product['images']=Gallary_image::where('product_id',$id)->get();
-        return response()->json($product);
-    }
-    public function addQuantity(Request $request, $id){
-        $product=Product::find($id);
+    $product['images']=Gallary_image::where('product_id',$id)->get();
+    return response()->json($product);
+}
+public function addQuantity(Request $request, $id){
+    $product=Product::find($id);
         // $categories=Category::orderBy('id','DESC')->get();
-        $product['quantity']+=$request->addNumber;
-        $product->save();
-        return response()->json($product);
-    }
+    $product['quantity']+=$request->addNumber;
+    $product->save();
+    return response()->json($product);
+}
 
-    public function destroy($id){
+public function destroy($id){
         // Product::find($id);
 
-        $data=Product::find($id)->delete();
-        return response()->json($data);
-    }
-    
-    public function store(Request $request) {
-        $data=$request->only(['name','description','content','cost','category_id']);
-        $data['slug']=str_slug($data['name'].time());
-        if ($request->has('image')) {
-            $imageName = time().'.'.$request->image->extension();  
+    $data=Product::find($id)->delete();
+    return response()->json($data);
+}
 
-            $request->image->move(public_path('images/product'), $imageName);
-            $data['image']='/images/product/'.$imageName;
-        }
-        $product=Product::create($data);
+public function store(Request $request) {
+    $data=$request->only(['name','description','content','cost','category_id']);
+    $data['slug']=str_slug($data['name'].time());
+    if ($request->has('image')) {
+        $imageName = time().'.'.$request->image->extension();  
 
-        
-        return $product;
-    
+        $request->image->move(public_path('images/product'), $imageName);
+        $data['image']='/images/product/'.$imageName;
     }
-    public function updateProduct(Request $request) {
-        $id=$request->only(['id']);
-        $data=$request->only(['name','description','content','cost','category_id']);
-        $data['slug']=str_slug($data['name']).time();
-        $boolean=Product::where('id',$id)->update($data);
-        if ($boolean) {
-        return Product::find($id)->first();
-        }else{
-            return response()->json(['error'=>'500']);
-        }
-        if (!isempty($request['image'])) {
+    $product=Product::create($data);
+
+
+    return $product;
+    
+}
+public function updateProduct(Request $request) {
+
+    $data=$request->only(['name','description','content','cost','category_id']);
+    $data['slug']=str_slug($data['name']).time();
+    if ($request->has('image')) {
             # code...
-            foreach ($request['images'] as $key => $image) {
-               $imageName = time().'.'.$request->image->extension();  
+        $imageName = time().'.'.$request->image->extension();  
+        $request->image->move(public_path('images/product'), $imageName);
+        $data['image']='/images/product/'.$imageName;
 
-            $request->image->move(public_path('images/product'), $imageName);
-            $data['image']='/images/product/'.$imageName;
-            }
-        }
-        $boolean=Post::find($id)->update($data);
-        if ($boolean) {
-        return Post::find($id)->first();
-        }else{
-            return response()->json(['error'=>'500']);
-        }
     }
-    public function getReason($id){
-        $post=Post::where('id',$id)->first();
-        return $post;
+    $boolean=Product::find($request->id)->update($data);
+    if ($boolean) {
+        return Product::find($request->id)->first();
+    }else{
+        return response()->json(['error'=>'500']);
     }
-    public function manageUser($slug){
+}
+public function getReason($id){
+    $post=Post::where('id',$id)->first();
+    return $post;
+}
+public function manageUser($slug){
 
-        $products= Product::where('slug',$slug)->first();
-        
-    }
+    $products= Product::where('slug',$slug)->first();
+
+}
 }

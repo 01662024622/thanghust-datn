@@ -62,11 +62,11 @@ class WorkingController extends Controller
 	{
 		// Cart::destroy();
 		$table = Table::where('code',$table)->first();
-		$order = Order::where('table_id',$table->id)->where('status',0)->first();
+		$order= Order::where('table_id',$table->id)->where('status',0)->first();
 		if ($order==null) {
 			$orderReq['table_id']=$table->id;
 			$orderReq['user_id']=Auth::id();
-			Order::create($orderReq);
+			$order=Order::create($orderReq);
 		}
 		if ($table->status!=2) {
 			$table->status=2;
@@ -84,13 +84,13 @@ class WorkingController extends Controller
 		];
 		Cart::add($cartInfo);
 		
-		$waits = Wait::where('product_id',$product->id)->where('table_id',$table->id)->first();
+		$waits = Wait::where('product_id',$product->id)->where('order_id',$order->id)->first();
 		if ($waits != null) {
 			$waits->quantity=$waits->quantity+1;
 			$waits->save();
 		}else {
 			$data['product_id']=$product->id;
-			$data['table_id']=$table->id;
+			$data['order_id']=$order->id;
 			Wait::create($data);
 		}
 
@@ -114,63 +114,105 @@ class WorkingController extends Controller
 		return $table;
 	}
 	public function dataWait($id){
-		$waits = Wait::where('table_id',$id)->select('waits.*');
-        return Datatables::of($waits)
-        ->addColumn('image', function ($data) {
-        	$product=Product::find($data['product_id']);
-            return '<image src="'.$product['image'].'" style="width:100px;hieght:auto" />';
-            
-        })
-        ->addColumn('action', function ($data) {
-            return '<input type="number" disabled value="'.$data['quantity'].'" style="width:40px; float:left;margin:0 5px">
-            <button type="button" class="btn btn-xs btn-success fa fa-check" onclick="alDeleteWait('.$data['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
-            ';
-            
-        })
-        ->addColumn('cost',  function ($data) {
-        	$product=Product::find($data['product_id']);
-            return number_format($product->cost) .' VND';
-            
-        })
+		$order = Order::where('table_id',$id)->where('status',0)->first();
+		if ($order!=null) {
+			$waits = Wait::where('order_id',$order->id)->select('waits.*');
+		}else {
+			$waits = Wait::where('order_id',0)->select('waits.*');
+		}
+		
+		return Datatables::of($waits)
+		->addColumn('image', function ($data) {
+			$product=Product::find($data['product_id']);
+			return '<image src="'.$product['image'].'" style="width:100px;hieght:auto" />';
 
-        ->addColumn('name',  function ($data) {
-        	$product=Product::find($data['product_id']);
-            return $product->name;
-            
-        })
-        ->setRowId('product-{{$id}}')
-        ->rawColumns(['action','image'],)
-        ->make(true);
-}
+		})
+		->addColumn('action', function ($data) {
+			return '<input type="number" disabled value="'.$data['quantity'].'" style="width:40px; float:left;margin:0 5px">
+			<button type="button" class="btn btn-xs btn-success fa fa-check" onclick="alDeleteWait('.$data['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
+			';
+
+		})
+		->addColumn('cost',  function ($data) {
+			$product=Product::find($data['product_id']);
+			return number_format($product->cost) .' VND';
+
+		})
+
+		->addColumn('name',  function ($data) {
+			$product=Product::find($data['product_id']);
+			return $product->name;
+
+		})
+		->setRowId('product-{{$id}}')
+		->rawColumns(['action','image'],)
+		->make(true);
+	}
 
 	public function dataBill($id){
 		$order = Order::where('table_id',$id)->where('status',0)->first();
-		$datas =OrderProduct::where('oder_id',$order->id)->select('order_product.*');
-        return Datatables::of($datas)
-        ->addColumn('image', function ($data) {
-        	$product=Product::find($data['product_id']);
-            return '<image src="'.$product['image'].'" style="width:100px;hieght:auto" />';
-            
-        })
-        ->addColumn('action', function ($data) {
-            return '<input type="number" disabled value="'.$data['quantity'].'" style="width:40px; float:left;margin:0 5px">
-            <button type="button" class="btn btn-xs btn-success fa fa-check" onclick="alDeleteWait('.$data['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
-            ';
-            
-        })
-        ->addColumn('cost',  function ($data) {
-        	$product=Product::find($data['product_id']);
-            return number_format($product->cost) .' VND';
-            
-        })
+		if ($order!=null) {
+			$datas =OrderProduct::where('order_id',$order->id)->select('order_product.*');
+		}else {
+			$datas =OrderProduct::where('order_id',0)->select('order_product.*');
+		}
+		return Datatables::of($datas)
+		->addColumn('image', function ($data) {
+			$product=Product::find($data['product_id']);
+			return '<image src="'.$product['image'].'" style="width:100px;hieght:auto" />';
 
-        ->addColumn('name',  function ($data) {
-        	$product=Product::find($data['product_id']);
-            return $product->name;
-            
-        })
-        ->setRowId('product-{{$id}}')
-        ->rawColumns(['action','image'],)
-        ->make(true);
-}
+		})
+		->addColumn('action', function ($data) {
+			return '<input type="number" disabled value="'.$data['quantity'].'" style="width:40px; float:left;margin:0 5px">
+			<button type="button" class="btn btn-xs btn-success fa fa-check" onclick="alDeleteWait('.$data['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
+			';
+
+		})
+		->addColumn('cost',  function ($data) {
+			$product=Product::find($data['product_id']);
+			return number_format($product->cost) .' VND';
+
+		})
+
+		->addColumn('name',  function ($data) {
+			$product=Product::find($data['product_id']);
+			return $product->name;
+
+		})
+		->setRowId('product-{{$id}}')
+		->rawColumns(['action','image'],)
+		->make(true);
+	}
+
+	public function payProduct($id)
+	{
+		$waits = Wait::find($id);
+		$orderProduct =OrderProduct::where('order_id',$waits->order_id)->where('product_id',$waits->product_id)->first();
+		if ($orderProduct!=null) {
+			$orderProduct->quantity=$orderProduct->quantity+$waits->quantity;
+			$orderProduct->save();
+		}else{
+			$data['order_id']=$waits->order_id;
+			$data['product_id']=$waits->product_id;
+			$data['quantity']=$waits->quantity;
+			OrderProduct::create($data);
+		}
+		$waits->delete();
+		return $waits;
+	}
+	public function paymentProposal($id)
+	{
+		$order =Order::where('table_id',$id)->where('status',0)->first();
+		$order->status=1;
+		$order->save();
+		$table=Table::find($id);
+		$carts= Cart::content()->where('options.table',$table->code);
+		foreach ($carts as $cart) {
+			Cart::remove($cart->rowId);
+		}
+		$table->status=0;
+		$table->save();
+		return $order;
+	}
+	
 }
