@@ -10,6 +10,9 @@
     font-weight: 900;
     text-align: center;
   }
+  #wait-table{
+    width: 100%;
+  }
 </style>
 @endsection
 @section('content')
@@ -45,6 +48,7 @@
             <th>Name</th>
             <th>Image</th>
             <th>Cost</th>
+            <th>Time</th>
             <th>Quantity</th>
           </tr>
         </thead>
@@ -65,7 +69,7 @@
 
 <div class="modal fade" id="wait-modal">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content" style="width: 700px;">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title">Waits</h4>
@@ -78,6 +82,8 @@
             <th>Name</th>
             <th>Image</th>
             <th>Cost</th>
+            <th>Time</th>
+            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -208,7 +214,7 @@
      var waits;
      var bills;
      function getDataWait() {
-      if(waits!=null){
+      if(waits!=undefined){
         waits.ajax.reload();
       }else{
        waits = $('#wait-table').DataTable({
@@ -220,13 +226,14 @@
         { data: 'name', name: 'name' },
         { data: 'image', name: 'image' },
         { data: 'cost', name: 'cost' },
-    // { data: 'quantity', name: 'quantity' },
-    { data: 'action', name: 'action' },
-    ],
-    "columnDefs": [
-    { "width": "65px", "targets": 4 }
-    ]
-  });
+        { data: 'created_at', name: 'created_at' },
+        { data: 'status', name: 'status' },
+        { data: 'action', name: 'action' },
+        ],
+        columnDefs: [
+        { "width": "65px", "targets": 6 }
+        ]
+      });
      }
 
    }
@@ -240,19 +247,20 @@
     }
 
 
-    if(bills!=null){
+    if(bills!=undefined){
       bills.ajax.reload();
     }else{
       bills = $('#bill-table').DataTable({
-        processing: true,
-        serverSide: true,
+        "processing": true,
+        "serverSide": true,
         ajax:{
           url: '/anyData/bill/table/{{$tableinfor->id}}',
           type: "GET",
           datatype: "json",
-          success: function (data) {
+          dataSrc: function (data) {
             if (data.recordsTotal == 0)
              $('#payment-proposal').hide()
+           return data.data;
          }
        }, 
        columns: [
@@ -260,13 +268,13 @@
        { data: 'name', name: 'name' },
        { data: 'image', name: 'image' },
        { data: 'cost', name: 'cost' },
+       { data: 'created_at', name: 'created_at' },
        { data: 'quantity', name: 'quantity' },
-    // { data: 'action', name: 'action' },
-    ],
-    "columnDefs": [
-    { "width": "65px", "targets": 4 }
-    ]
-  });
+       ],
+       "columnDefs": [
+       { "width": "65px", "targets": 4 }
+       ]
+     });
     }
   }
   function alDeleteWait(id){

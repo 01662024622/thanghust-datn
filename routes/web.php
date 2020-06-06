@@ -31,6 +31,14 @@ Route::middleware('logined')->group(function(){
 
         Route::get('/anyData/waits/table/{id}', 'WorkingController@dataWait')->name('datatables.waits');
         Route::get('/anyData/bill/table/{id}', 'WorkingController@dataBill')->name('datatables.bills');
+
+        Route::get('/chef/anyData/', 'ChefController@dataChef');
+        Route::get('/chef', 'ChefController@index');
+        Route::get('/chef/order/{id}', 'ChefController@changeStatus');
+
+        Route::get('/cashier/anyData/', 'ChefController@dataCashier');
+        Route::get('/cashier', 'ChefController@cashier');
+        Route::get('/cashier/order/{id}', 'ChefController@payment');
 });
 
 

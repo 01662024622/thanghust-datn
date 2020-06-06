@@ -13,6 +13,7 @@ use Cart;
 use DB;
 use Auth;
 use Yajra\Datatables\Datatables;
+use Carbon\Carbon;
 class WorkingController extends Controller
 {
 	public function location($location){
@@ -131,6 +132,8 @@ class WorkingController extends Controller
 			return '<input type="number" disabled value="'.$data['quantity'].'" style="width:40px; float:left;margin:0 5px">
 			<button type="button" class="btn btn-xs btn-success fa fa-check" onclick="alDeleteWait('.$data['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
 			';
+			
+			
 
 		})
 		->addColumn('cost',  function ($data) {
@@ -138,14 +141,26 @@ class WorkingController extends Controller
 			return number_format($product->cost) .' VND';
 
 		})
+		->editColumn('created_at',  function ($data) {
+			$now = Carbon::now();
+			return $data['created_at']->diffForHumans($now);
+		})
+
 
 		->addColumn('name',  function ($data) {
 			$product=Product::find($data['product_id']);
 			return $product->name;
 
+		})	
+		->editColumn('status',  function ($data) {
+			if($data['status']==0){
+				return '<button type="button" class="btn btn-xs btn-warning" style="float:left;margin:0 5px;height:25px">Waits</button>';
+			}else {
+				return '<button type="button" class="btn btn-xs btn-success" style="float:left;margin:0 5px;height:25px">Done</button>';
+			}
 		})
 		->setRowId('product-{{$id}}')
-		->rawColumns(['action','image'],)
+		->rawColumns(['action','image','status'],)
 		->make(true);
 	}
 
@@ -161,13 +176,12 @@ class WorkingController extends Controller
 			$product=Product::find($data['product_id']);
 			return '<image src="'.$product['image'].'" style="width:100px;hieght:auto" />';
 
+		})		
+		->editColumn('created_at',  function ($data) {
+			$now = Carbon::now();
+			return $data['created_at']->diffForHumans($now);
 		})
-		->addColumn('action', function ($data) {
-			return '<input type="number" disabled value="'.$data['quantity'].'" style="width:40px; float:left;margin:0 5px">
-			<button type="button" class="btn btn-xs btn-success fa fa-check" onclick="alDeleteWait('.$data['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
-			';
 
-		})
 		->addColumn('cost',  function ($data) {
 			$product=Product::find($data['product_id']);
 			return number_format($product->cost) .' VND';
@@ -180,7 +194,7 @@ class WorkingController extends Controller
 
 		})
 		->setRowId('product-{{$id}}')
-		->rawColumns(['action','image'],)
+		->rawColumns(['image'],)
 		->make(true);
 	}
 

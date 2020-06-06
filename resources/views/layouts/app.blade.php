@@ -214,24 +214,35 @@
       @foreach($locations as $location)
       <li>
         <a href="/location/{{$location->location}}">
-          <i class="fa fa-table"></i> <span>{{$location->location}}</span>
+          <i class="fa fa-map-marker"></i> <span>{{$location->location}}</span>
         </a>
       </li>
       @endforeach
       @foreach($categories as $category)
       <li>
         <a href="?category={{$category->id}}">
-          <i class="fa fa-table"></i> <span>{{$category->name}}</span>
+          <i class="fa fa-cutlery"></i> <span>{{$category->name}}</span>
         </a>
       </li>
       @endforeach
       @if(count($categories)>0)
       <li>
         <a href="/location/{{$tableinfor->location}}">
-          <i class="fa fa-table"></i> <span>Back to chose table</span>
+          <i class="fa fa-map-marker"></i> <span>Back to chose location</span>
         </a>
       </li>
       @endif
+      <li>
+        <a href="/chef">
+          <i class="fa fa-clock-o"></i> <span>Product List Called</span>
+        </a>
+      </li>
+      <li>
+        <a href="/cashier">
+          <i class="fa fa-money"></i> <span>
+          Cashier</span>
+        </a>
+      </li>
     </ul>
   </section>
   <!-- /.sidebar -->
