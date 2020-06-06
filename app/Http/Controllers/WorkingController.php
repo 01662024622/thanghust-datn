@@ -203,13 +203,17 @@ class WorkingController extends Controller
 	public function paymentProposal($id)
 	{
 		$order =Order::where('table_id',$id)->where('status',0)->first();
-		$order->status=1;
-		$order->save();
+		
 		$table=Table::find($id);
 		$carts= Cart::content()->where('options.table',$table->code);
+		$total =0;
 		foreach ($carts as $cart) {
+			$total=$total+($cart->price*$cart->qty);
 			Cart::remove($cart->rowId);
 		}
+		$order->total=$total;
+		$order->status=1;
+		$order->save();
 		$table->status=0;
 		$table->save();
 		return $order;

@@ -15,7 +15,7 @@
         <th>Email</th>
         <th>phone</th>
         <th>Address</th>
-        <th>Status</th>
+        <th>Role</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -112,6 +112,7 @@
 {{-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> --}}
 
 <script type="text/javascript" charset="utf-8">
+ var dataTable;
   $(function () {
     $.ajaxSetup({
 
@@ -120,7 +121,7 @@
       }
     });
 
-    var dataTable=  $('#users-table').DataTable({
+    dataTable=  $('#users-table').DataTable({
       processing: true,
       serverSide: true,
       ajax: '{!! route('users.data') !!}',
@@ -131,7 +132,7 @@
       { data: 'email', name: 'email' },
       { data: 'phone', name: 'phone' },
       { data: 'address', name: 'address' },
-      { data: 'status', name: 'status' },
+      { data: 'role', name: 'role' },
       { data: 'action', name: 'action' },
       ]
     });
@@ -414,6 +415,43 @@
 
 
 
+ function changeStatus(id){
+        swal({
+          title: "Are you sure to change?",
+        // text: "Bạn sẽ không thể khôi phục lại bản ghi này!!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",  
+        cancelButtonText: "No",
+        confirmButtonText: "Yes",
+        // closeOnConfirm: false,
+      },
+      function(isConfirm) {
+        if (isConfirm) {
+          $.ajax({
+            type: "post",
+            url: "/admin/api/status/users/"+id,
+            data: {
+              role:$('#role_'+id).val()
+            },
+            dataType:'json',
+            success: function(res)
+            {
+              if(!res.error) {
+                toastr.success('Success!');
+
+                dataTable.ajax.reload();
+              }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              toastr.error(thrownError);
+            }
+          });
+        } else {
+          toastr.error("Cancel!");
+        }
+      });
+      };
 
 
 

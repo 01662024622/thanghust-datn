@@ -15,13 +15,6 @@
 
 Auth::routes();
 // Route::group(['prefix' => 'admin'], function() {
-Route::middleware('auth')->group(function(){
-        Route::get('/orders', 'HomeController@index')->name('home');
-        Route::get('userOder', 'HomeController@anyData')->name('userOder.data');
-        Route::get('getOrder/{id}', 'HomeController@getOrder');
-        Route::delete('deleteOrder/{id}', 'HomeController@deleteOrder');
-});
-
 
 
 Route::middleware('logined')->group(function(){
@@ -64,6 +57,7 @@ Route::group(['prefix'=>'admin'],function(){
                 Route::delete('user/{id}', 'UserController@destroy');
                 Route::get('user/status/{id}', 'UserController@status');
                 Route::post('users/update', 'UserController@updateUser');
+                Route::post('/api/status/users/{id}', 'UserController@usersStatus');
 
                 Route::get('anyCategory', 'CategoryController@anyData')->name('categories.data');
                 Route::get('categories', 'CategoryController@index');

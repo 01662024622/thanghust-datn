@@ -166,6 +166,7 @@
             toastr.error(thrownError);
           }
         });
+        setWaitTotal();
       }
       $('#set-status').on('click', function(event) {
         event.preventDefault();
@@ -229,7 +230,14 @@
      }
 
    }
+
+   var recordsTotal=0;
    function getDataBill() {
+    if(recordsTotal==0){
+      $('#payment-proposal').show()
+    }else {
+      $('#payment-proposal').hide()
+    }
 
 
     if(bills!=null){
@@ -238,13 +246,21 @@
       bills = $('#bill-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: '/anyData/bill/table/{{$tableinfor->id}}',
-        columns: [
-        { data: 'id', name: 'id' },
-        { data: 'name', name: 'name' },
-        { data: 'image', name: 'image' },
-        { data: 'cost', name: 'cost' },
-        { data: 'quantity', name: 'quantity' },
+        ajax:{
+          url: '/anyData/bill/table/{{$tableinfor->id}}',
+          type: "GET",
+          datatype: "json",
+          success: function (data) {
+            if (data.recordsTotal == 0)
+             $('#payment-proposal').hide()
+         }
+       }, 
+       columns: [
+       { data: 'id', name: 'id' },
+       { data: 'name', name: 'name' },
+       { data: 'image', name: 'image' },
+       { data: 'cost', name: 'cost' },
+       { data: 'quantity', name: 'quantity' },
     // { data: 'action', name: 'action' },
     ],
     "columnDefs": [
@@ -265,21 +281,34 @@
         toastr.error(thrownError);
       }
     });
+    setWaitTotal();
   }
- $('#payment-proposal').on('click', function(event) {
-  event.preventDefault();
-  $.ajax({
-    type: "GET",
-    url: "/payment/proposal/{{$tableinfor->id}}",
-    success: function(response)
-    {
-      location.reload();
-    },
-    error: function (xhr, ajaxOptions, thrownError) {
-      toastr.error(thrownError);
-    }
+  $('#payment-proposal').on('click', function(event) {
+    event.preventDefault();
+    $.ajax({
+      type: "GET",
+      url: "/payment/proposal/{{$tableinfor->id}}",
+      success: function(response)
+      {
+        location.reload();
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        toastr.error(thrownError);
+      }
+    });
   });
-});
-
+  function setWaitTotal(){
+    $.ajax({
+      type: "GET",
+      url: "/anyData/waits/table/{{$tableinfor->id}}",
+      success: function(response)
+      {
+        recordsTotal=response.recordsTotal;
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        toastr.error(thrownError);
+      }
+    });
+  }
 </script>
 @endsection
