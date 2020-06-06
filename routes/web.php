@@ -37,6 +37,7 @@ Route::middleware('logined')->group(function(){
         Route::get('/chef/order/{id}', 'ChefController@changeStatus');
 
         Route::get('/cashier/anyData/', 'ChefController@dataCashier');
+        Route::get('/anyData/order/bill/{id}', 'ChefController@orderBill');
         Route::get('/cashier', 'ChefController@cashier');
         Route::get('/cashier/order/{id}', 'ChefController@payment');
 });
