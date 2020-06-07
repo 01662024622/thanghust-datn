@@ -108,7 +108,6 @@
 
           </li>
           @endif
-          @endif
           <!-- Notifications: style can be found in dropdown.less -->
           <li class="dropdown notifications-menu">
             <button  class="dropdown-toggle" data-toggle="modal" href='#wait-modal' onclick="getDataWait()">
@@ -123,6 +122,7 @@
             </button>
 
           </li>
+          @endif
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
