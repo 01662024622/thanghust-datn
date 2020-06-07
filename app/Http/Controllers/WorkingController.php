@@ -98,8 +98,35 @@ class WorkingController extends Controller
 		return 'true';
 
 	}
+
+	public function cartminus($table,$id)
+	{
+			// Cart::destroy();
+		$table = Table::where('code',$table)->first();
+
+		$order= Order::where('table_id',$table->id)->where('status',0)->first();
+		$wait= Wait::find($id);
+
+		$product = Product::find($wait->product_id);
+		$cart = Cart::content()->where('id',$product->id)->where('options.table',$table->code)->first();
+		Cart::update($cart->rowId, ['qty' =>($cart->qty-1) ]);
+
+		$waits = Wait::where('product_id',$product->id)->where('order_id',$order->id)->first();
+		if ($waits->quantity>1) {
+			$waits->quantity=$waits->quantity-1;
+			$waits->save();
+		}else {
+
+			$waits->delete();
+		}
+
+		return 'true';
+
+	}
+
 	public function tableStatus(Request $request,$id)
 	{
+		$table= Table::find($id);
 		
 		if ($table->status==0) {
 			$order = $request->only(['name','phone','note']);
@@ -129,7 +156,8 @@ class WorkingController extends Controller
 
 		})
 		->addColumn('action', function ($data) {
-			return '<input type="number" disabled value="'.$data['quantity'].'" style="width:40px; float:left;margin:0 5px">
+			return '<button type="button" class="btn btn-xs btn-danger fa fa-minus" onclick="minusWait('.$data['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
+			<input type="number" disabled value="'.$data['quantity'].'" style="width:40px; float:left;margin:0 5px">
 			<button type="button" class="btn btn-xs btn-success fa fa-check" onclick="alDeleteWait('.$data['id'].')" style="float:left;margin:0 5px;height:25px;width:25px"></button>
 			';
 			
@@ -228,6 +256,17 @@ class WorkingController extends Controller
 		$order->total=$total;
 		$order->status=1;
 		$order->save();
+		$table->status=0;
+		$table->save();
+		return $order;
+	}
+
+	public function orderStatus(Request $request,$id)
+	{
+		
+		$order=Order::find($id);
+		$order->update($request->all());
+		$table=Table::find($order->table_id);
 		$table->status=0;
 		$table->save();
 		return $order;

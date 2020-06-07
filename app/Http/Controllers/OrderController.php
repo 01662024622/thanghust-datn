@@ -36,7 +36,7 @@ class OrderController extends Controller
         return view('orders.index',['currentUser'=>$currentUser,'sumNotice'=>$sumNotice,'sumPost'=>$sumPost]);
     }
     public function anyData(){
-        $orders = Order::select('orders.*');
+        $orders = Order::where('status',2)->select('orders.*');
         return Datatables::of($orders)
         ->addColumn('action', function ($order) {
             return'

@@ -48,7 +48,18 @@
           </tr>
         </thead>
       </table>
-
+      <div class="form-group">
+        <label for="">Name</label>
+        <input type="text" class="form-control" id="name" placeholder="Input Name">
+      </div>
+      <div class="form-group">
+        <label for="">Phone</label>
+        <input type="text" class="form-control" id="phone" placeholder="Input Phone">
+      </div>
+      <div class="form-group">
+        <label for="">Note</label>
+        <textarea name="note" id="note" class="form-control"></textarea>
+      </div>
     </div>                       
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -59,7 +70,7 @@
 </div>
 </div>
 
-
+<input type="hidden" name="oid" id="oid" value="">
 
 @endsection
 @section('js')
@@ -107,6 +118,7 @@
   var bills;
 
   function paymentEnd(id) {
+        $("#oid").val(id)
     if(bills!=undefined){
       bills.ajax.reload();
     }else{
@@ -140,6 +152,27 @@
       });
     }
   }
-
+ $('#payment-proposal').on('click', function(event) {
+        var id= $("#oid").val();
+        event.preventDefault();
+        $.ajax({
+          type: "POST",
+          url: "/status/table/cashier/"+id,
+          data:{
+            name:$('#name').val(),
+            phone:$('#phone').val(),
+            note:$('#note').val(),
+            status:2,
+          },
+          dataType:'json',
+          success: function(response)
+          {
+            location.reload();
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            toastr.error(thrownError);
+          }
+        });
+      });
 </script>
 @endsection

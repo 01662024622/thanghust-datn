@@ -70,7 +70,7 @@ class ProductController extends Controller
             
         })
         ->addColumn('action', function ($product) {
-            $rowId = $cart = Cart::content()->where('id',$product['id'])->where('options.table',$product['table_code'])->first();
+            $rowId =  Cart::content()->where('id',$product['id'])->where('options.table',$product['table_code'])->first();
             $number = '<input type="number" disabled value="0" style="width:40px; float:left;margin:0 5px">';
             if ($rowId!=null) {
                 $number = '<input type="number" disabled value="'.$rowId->qty.'" style="width:40px; float:left;margin:0 5px">';

@@ -211,6 +211,14 @@
     <!-- /.search form -->
     <!-- sidebar menu: : style can be found in sidebar.less -->
     <ul class="sidebar-menu" data-widget="tree">
+      @if(Auth::user()->role!=1)
+      <li>
+        <a href="/chef">
+          <i class="fa fa-clock-o"></i> <span>Product List Called</span>
+        </a>
+      </li>
+      @endif
+      @if(Auth::user()->role!=2)
       @foreach($locations as $location)
       <li>
         <a href="/location/{{$location->location}}">
@@ -232,17 +240,15 @@
         </a>
       </li>
       @endif
-      <li>
-        <a href="/chef">
-          <i class="fa fa-clock-o"></i> <span>Product List Called</span>
-        </a>
-      </li>
+      @if(Auth::user()->role==1)
       <li>
         <a href="/cashier">
           <i class="fa fa-money"></i> <span>
           Cashier</span>
         </a>
       </li>
+      @endif
+      @endif
     </ul>
   </section>
   <!-- /.sidebar -->

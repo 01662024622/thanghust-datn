@@ -83,7 +83,7 @@ class ChefController extends Controller
 	}
 	
 	public function dataCashier(){
-		$orders = Order::select('orders.*');
+		$orders = Order::where('status',1)->select('orders.*');
 		return Datatables::of($orders)
 		->addColumn('action', function ($order) {
 			return'

@@ -136,7 +136,9 @@
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
-  var tableData=$('#users-table').DataTable({
+  var tableData;
+  
+  tableData=$('#users-table').DataTable({
     processing: true,
     serverSide: true,
     ajax: '/anyDataUser/{{$categoryinfor->id}}/{{$tableinfor->code}}',
@@ -152,6 +154,25 @@
     { "width": "65px", "targets": 5 }
     ]
   });
+  function minusWait(id){
+    console.log(id);
+        // $('#editPost').modal('show');
+
+        $.ajax({
+          type: "GET",
+          url: "/minus/{{$tableinfor->code}}/"+id,
+
+          success: function(response)
+          {
+            waits.ajax.reload();
+            tableData.ajax.reload();
+          },
+          error: function (xhr, ajaxOptions, thrownError) {
+            toastr.error(thrownError);
+          }
+        });
+        setWaitTotal();
+      }
         // width: 65px;
 
         function wareHousing(id){
@@ -174,11 +195,13 @@
         });
         setWaitTotal();
       }
+
+
       $('#set-status').on('click', function(event) {
         event.preventDefault();
         $.ajax({
           type: "POST",
-          url: "/status/stable/user/{{$tableinfor->id}}",
+          url: "/status/table/user/{{$tableinfor->id}}",
           data:{
             name:$('#name').val(),
             phone:$('#phone').val(),
@@ -231,7 +254,7 @@
         { data: 'action', name: 'action' },
         ],
         columnDefs: [
-        { "width": "65px", "targets": 6 }
+        { "width": "145px", "targets": 6 }
         ]
       });
      }

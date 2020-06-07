@@ -23,7 +23,9 @@ Route::middleware('logined')->group(function(){
 
         Route::get('/table/{table}', 'WorkingController@table');
         Route::get('/add/{table}/{id}', 'WorkingController@cart');
-        Route::post('/status/stable/user/{code}', 'WorkingController@tableStatus');
+        Route::get('/minus/{table}/{id}', 'WorkingController@cartminus');
+        Route::post('/status/table/user/{code}', 'WorkingController@tableStatus');
+        Route::post('/status/table/cashier/{code}', 'WorkingController@orderStatus');
         Route::get('/pay/product/{id}', 'WorkingController@payProduct');
         Route::get('/payment/proposal/{id}', 'WorkingController@paymentProposal');
 
