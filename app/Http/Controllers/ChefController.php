@@ -140,5 +140,7 @@ class ChefController extends Controller
 		->rawColumns(['image'],)
 		->make(true);
 	}
-	
+	public function payment($id){
+		return Order::find($id);
+	}
 }

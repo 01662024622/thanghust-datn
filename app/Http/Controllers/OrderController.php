@@ -40,7 +40,7 @@ class OrderController extends Controller
         return Datatables::of($orders)
         ->addColumn('action', function ($order) {
             return'
-            <button type="button" class="btn btn-xs btn-info" data-toggle="modal" href="#wareHousing" onclick="wareHousing('.$order['id'].')" ><i class="fa fa-eye" aria-hidden="true"></i></button>
+            <button type="button" class="btn btn-xs btn-info" data-toggle="modal" href="#wareHousing" onclick="paymentEnd('.$order['id'].')" ><i class="fa fa-eye" aria-hidden="true"></i></button>
             ';
             
         })

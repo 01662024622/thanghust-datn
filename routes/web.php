@@ -92,6 +92,8 @@ Route::group(['prefix'=>'admin'],function(){
                 Route::get('adminorder', 'OrderController@anyData')->name('adminOder.data');
                 Route::get('getOrder/{id}', 'OrderController@getOrder');
                 Route::delete('deleteOrder/{id}', 'OrderController@deleteOrder');
+                
+                Route::get('/anyData/order/bill/{id}', 'ChefController@orderBill');
 
                 // });
 

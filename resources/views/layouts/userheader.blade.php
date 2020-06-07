@@ -374,7 +374,7 @@
           <li>
             <a href="javascript:void(0)">
               <h4 class="control-sidebar-subheading">
-                Laravel Integration
+                Integration
                 <span class="label label-warning pull-right">50%</span>
               </h4>
 

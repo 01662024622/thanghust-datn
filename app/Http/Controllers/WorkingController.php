@@ -17,6 +17,9 @@ use Carbon\Carbon;
 class WorkingController extends Controller
 {
 	public function location($location){
+		if (Auth::user()->status==2) {
+			return redirect('/chef');
+		}
 
 		$locations= Table::select('location')->distinct()->get();
 		if ($location!=null) {

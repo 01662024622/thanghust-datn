@@ -60,6 +60,13 @@
         <label for="">Note</label>
         <textarea name="note" id="note" class="form-control"></textarea>
       </div>
+      <div class="form-group">
+        <span style="float: left"><b>Total: </b></span>
+        <span style="float: right"><b id="total-number"></b></span>
+      </div>
+      <br>
+      <br>
+      <br>
     </div>                       
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -118,6 +125,8 @@
   var bills;
 
   function paymentEnd(id) {
+
+
         $("#oid").val(id)
     if(bills!=undefined){
       bills.ajax.reload();
@@ -136,6 +145,7 @@
               total=total+data.data[i]['quantity']*data.data[i]['cost'];
             }
             console.log(total);
+            $('#total-number').text(parseInt(total).toLocaleString()+" VND");
             return data.data;
           }
         }, 
@@ -151,6 +161,21 @@
         ]
       });
     }
+     $.ajax({
+      type: "GET",
+      url: '/cashier/order/'+id,
+      success: function(response)
+      {
+        $('#name').val(response.name);
+        $('#phone').val(response.phone);
+        $('#note').val(response.note);
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        toastr.error(thrownError);
+      }
+    });
+
+    
   }
  $('#payment-proposal').on('click', function(event) {
         var id= $("#oid").val();
