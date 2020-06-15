@@ -1,14 +1,14 @@
 @extends('layouts.adminheader')
 @section('css')
 <style type="text/css" media="screen">
-.paginate_button{
-  color: #fff;
-  background-color: #e68f35;
-  border-color: #d43f3a;
-  padding: 6px;
-  border-radius: 5px;
-  margin: 2px;
-}
+  .paginate_button{
+    color: #fff;
+    background-color: #e68f35;
+    border-color: #d43f3a;
+    padding: 6px;
+    border-radius: 5px;
+    margin: 2px;
+  }
 </style>
 
 <script src="https://cdn.ckeditor.com/4.8.0/standard/ckeditor.js"></script>
@@ -16,7 +16,7 @@
 @section('content')
 
 <div class="container" style="width:100%">
-  <h2>Categories</h2>
+  <h2>Coupons</h2>
   <br />
 
   <a href="#"  class="btn btn-info" data-toggle="modal" data-target="#create">+ Add </a>
@@ -26,8 +26,8 @@
       <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Parent_Category</th>
-        <th>Sort_Order</th>
+        <th>Amount</th>
+        <th>Expiration Date</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -37,7 +37,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="">Update</h5>
+        <h5 class="modal-title" id="">Update Coupon</h5>
       </div>
       <div class="modal-body">
         <form action="" method="user" role="form" id="editUser" style=" width:100%" enctype="multipart/form-data">
@@ -46,20 +46,7 @@
             <label class="control-label col-sm-2" for="name">Name:</label>
             <input type="text" class="form-control" id="ename" placeholder="Enter name" name="name">
           </div>
-          <select name="ecategory_id" id="eparent_id" style="width: 100%" class="form-control">
-            <option  value="0" style="font-weight: 900;color:red"><b> <strong>Main Category </strong></b> </option>
-            @foreach($categories as $category)
-            <option value="{{$category['id']}}">{{$category['name']}}</option>}
-            option
-            @endforeach
-          </select>
-          <div class="form-group">
-            @if ($errors->has('phone'))
-            <span class="errors">{{$errors->first('phone')}}</span>
-            @endif
-            <label class="control-label" for="phone">Sort_Order:</label>        
-            <input type="tel" name="esort_order"  class="form-control" id="esort_order" value="" placeholder="">
-          </div>
+
           <input type="hidden" name="eid" id="eid">
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -76,7 +63,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="edituser">Add</h5>
+        <h5 class="modal-title" id="edituser">Add Coupons</h5>
       </div>
       <div class="modal-body">
         <form action="" method="post" id="addUser" style=" width:100%" enctype="multipart/form-data">
@@ -85,32 +72,42 @@
             <label class="control-label col-sm-2" for="name">Name:</label>
             <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
           </div>
-          <div class="form-group">
-            <label class="control-label col-sm-2 " for="description">Category:</label>
-            <select name="category_id" id="parent_id" style="width: 100%" class="form-control">
-              <option  value="0" style="font-weight: 900;color:red"><b> <strong>Main Category </strong></b> </option>}
-              @foreach($categories as $category)
-              <option value="{{$category['id']}}">{{$category['name']}}</option>}
-              option
-              @endforeach
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="control-label" for="phone">Sort_Order:</label>        
-            <input type="tel" name="sort_order"  class="form-control" id="sort_order" value="" placeholder="">
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" id="StoreBtn" class="btn btn-primary">Save changes</button>
-          </div> 
-        </form>
-      </div>
-    </div>
-  </div>
+          <div class="form-group ">
+            <label class="control-label col-sm-2 requiredField" for="date">
+             Date
+             <span class="asteriskField">
+              *:
+            </span>
+          </label>
+           <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
+     </div>
+     <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <button type="button" id="StoreBtn" class="btn btn-primary">Save changes</button>
+    </div> 
+  </form>
+</div>
+</div>
+</div>
 </div>
 @endsection
 @section('js')
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+<script>
+  $(document).ready(function(){
+    var date_input=$('input[name="date"]'); //our date input has the name "date"
+    var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+    date_input.datepicker({
+      format: 'mm/dd/yyyy',
+      container: container,
+      todayHighlight: true,
+      autoclose: true,
+      startDate : new Date()
+    })
+  })
+</script>
 
 {{-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> --}}
 <script type="text/javascript" charset="utf-8">
@@ -118,12 +115,12 @@
     $('#users-table').DataTable({
       processing: true,
       serverSide: true,
-      ajax: '{!! route('categories.data') !!}',
+      ajax: '{!! route('coupons.data') !!}',
       columns: [
       { data: 'id', name: 'id' },
       { data: 'name', name: 'name' },
-      { data: 'sort_order', name: 'sort_order' },
-      { data: 'parent_id', name: 'parent_id' },
+      { data: 'amount', name: 'amount' },
+      { data: 'expiration_date', name: 'expiration_date' },
       { data: 'action', name: 'action' },
       ]
     });

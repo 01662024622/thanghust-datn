@@ -78,6 +78,14 @@ Route::group(['prefix'=>'admin'],function(){
                 Route::post('categories/update', 'CategoryController@updateData');
 
 
+                Route::get('anyCoupon', 'CouponController@anyData')->name('coupons.data');
+                Route::get('coupons', 'CouponController@index');
+                Route::get('coupons/edit/{id}', 'CouponController@getData');
+                Route::post('coupons/store', 'CouponController@store');
+                Route::delete('coupons/{id}', 'CouponController@destroy');
+                Route::post('coupons/update', 'CouponController@updateData');
+
+
 
                 Route::get('anyTables', 'TableController@anyData')->name('tables.data');
                 Route::get('tables', 'TableController@index');

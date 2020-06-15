@@ -256,29 +256,34 @@
        <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
         <li>
-          <a href="{{ asset('admin/products') }}">
+          <a href="{{ asset('/admin/products') }}">
             <i class="fa fa-product-hunt"></i> <span>Products</span>
           </a>
         </li>
         <li>
-          <a href="{{ asset('admin/categories') }}">
+          <a href="{{ asset('/admin/categories') }}">
             <i class="fa fa-bars"></i> <span>Category</span>
           </a>
         </li>
         <li>
-          <a href="{{ asset('admin/users') }}">
+          <a href="{{ asset('/admin/users') }}">
             <i class="fa fa-users"></i> <span>Users</span>
             </span>
           </a>
         </li>
         <li>
-          <a href="{{ asset('admin/orders') }}">
+          <a href="{{ asset('/admin/orders') }}">
             <i class="fa fa-cart-arrow-down"></i> <span>Order</span>
           </a>
         </li>
         <li>
-          <a href="{{ asset('admin/tables') }}">
+          <a href="{{ asset('/admin/tables') }}">
             <i class="fa fa-cart-arrow-down"></i> <span>Tables</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ asset('/admin/coupons') }}">
+            <i class="fa fa-ticket"></i> <span>Coupons</span>
           </a>
         </li>
       </ul>
