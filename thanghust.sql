@@ -11,7 +11,7 @@
  Target Server Version : 100411
  File Encoding         : 65001
 
- Date: 07/06/2020 10:44:49
+ Date: 16/06/2020 15:58:36
 */
 
 SET NAMES utf8mb4;
@@ -61,6 +61,20 @@ INSERT INTO `categories` VALUES (1, 'Bia Rượu', '0', 0, '2020-06-05 06:36:50'
 INSERT INTO `categories` VALUES (2, 'Món Nướng', '0', 0, '2020-06-05 06:37:03', '2020-06-05 06:37:03');
 
 -- ----------------------------
+-- Table structure for coupons
+-- ----------------------------
+DROP TABLE IF EXISTS `coupons`;
+CREATE TABLE `coupons`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `amount` int(11) NOT NULL,
+  `expiration_date` timestamp(0) NOT NULL DEFAULT current_timestamp ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp(0) NULL DEFAULT NULL,
+  `updated_at` timestamp(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for gallary_images
 -- ----------------------------
 DROP TABLE IF EXISTS `gallary_images`;
@@ -82,7 +96,7 @@ CREATE TABLE `migrations`  (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of migrations
@@ -90,7 +104,6 @@ CREATE TABLE `migrations`  (
 INSERT INTO `migrations` VALUES (11, '2014_10_12_000000_create_users_table', 1);
 INSERT INTO `migrations` VALUES (12, '2014_10_12_100000_create_password_resets_table', 1);
 INSERT INTO `migrations` VALUES (13, '2018_04_26_065628_create_products_table', 1);
-INSERT INTO `migrations` VALUES (14, '2018_04_26_065935_create_orders_table', 1);
 INSERT INTO `migrations` VALUES (15, '2018_04_26_065954_create_admins_table', 1);
 INSERT INTO `migrations` VALUES (16, '2018_04_26_090104_create_gallary_images_table', 1);
 INSERT INTO `migrations` VALUES (17, '2018_05_15_041738_create_categories_table', 1);
@@ -98,6 +111,8 @@ INSERT INTO `migrations` VALUES (18, '2020_05_11_034216_create_tables_table', 1)
 INSERT INTO `migrations` VALUES (19, '2020_05_31_091104_create_shoppingcart_table', 1);
 INSERT INTO `migrations` VALUES (20, '2020_05_31_161845_create_waits_table', 1);
 INSERT INTO `migrations` VALUES (21, '2020_06_01_155927_create_order_product_table', 1);
+INSERT INTO `migrations` VALUES (25, '2018_04_26_065935_create_orders_table', 2);
+INSERT INTO `migrations` VALUES (26, '2020_06_15_022356_create_coupons_table', 2);
 
 -- ----------------------------
 -- Table structure for order_product
@@ -111,18 +126,7 @@ CREATE TABLE `order_product`  (
   `created_at` timestamp(0) NULL DEFAULT NULL,
   `updated_at` timestamp(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of order_product
--- ----------------------------
-INSERT INTO `order_product` VALUES (1, 1, 1, 6, '2020-06-05 08:00:31', '2020-06-05 08:07:11');
-INSERT INTO `order_product` VALUES (2, 1, 2, 1, '2020-06-05 09:17:15', '2020-06-05 09:17:15');
-INSERT INTO `order_product` VALUES (3, 1, 3, 1, '2020-06-05 09:23:08', '2020-06-05 09:23:08');
-INSERT INTO `order_product` VALUES (4, 1, 4, 1, '2020-06-05 09:29:23', '2020-06-05 09:29:23');
-INSERT INTO `order_product` VALUES (5, 1, 5, 2, '2020-06-05 18:20:10', '2020-06-05 18:20:10');
-INSERT INTO `order_product` VALUES (6, 1, 6, 1, '2020-06-05 18:29:12', '2020-06-05 18:29:12');
-INSERT INTO `order_product` VALUES (7, 1, 7, 2, '2020-06-06 10:07:37', '2020-06-06 10:23:10');
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for orders
@@ -137,21 +141,11 @@ CREATE TABLE `orders`  (
   `user_id` int(11) NOT NULL,
   `total` int(11) NOT NULL DEFAULT 0,
   `status` int(11) NOT NULL DEFAULT 0,
+  `coupon_id` int(11) NOT NULL DEFAULT 0,
   `created_at` timestamp(0) NULL DEFAULT NULL,
   `updated_at` timestamp(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of orders
--- ----------------------------
-INSERT INTO `orders` VALUES (1, NULL, NULL, NULL, 1, 1, 0, 1, '2020-06-05 06:56:02', '2020-06-05 09:01:16');
-INSERT INTO `orders` VALUES (2, NULL, NULL, NULL, 1, 1, 0, 1, '2020-06-05 09:15:27', '2020-06-05 09:17:19');
-INSERT INTO `orders` VALUES (3, NULL, NULL, NULL, 1, 1, 0, 1, '2020-06-05 09:23:04', '2020-06-05 09:23:12');
-INSERT INTO `orders` VALUES (4, NULL, NULL, NULL, 1, 1, 0, 1, '2020-06-05 09:29:19', '2020-06-05 09:29:27');
-INSERT INTO `orders` VALUES (5, '123', '0909090909', 'thang', 1, 1, 3600000, 2, '2020-06-05 18:20:07', '2020-06-07 03:07:35');
-INSERT INTO `orders` VALUES (6, NULL, NULL, NULL, 2, 1, 1800000, 1, '2020-06-05 18:29:03', '2020-06-05 18:30:06');
-INSERT INTO `orders` VALUES (7, NULL, NULL, NULL, 2, 1, 0, 0, '2020-06-05 18:30:11', '2020-06-05 18:30:11');
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for password_resets
@@ -218,8 +212,8 @@ CREATE TABLE `tables`  (
 -- ----------------------------
 -- Records of tables
 -- ----------------------------
-INSERT INTO `tables` VALUES (1, 'A1', 'A', 0, 4, '2020-06-05 06:37:14', '2020-06-05 18:20:13');
-INSERT INTO `tables` VALUES (2, 'A2', 'A', 2, 4, '2020-06-05 06:37:18', '2020-06-05 18:30:11');
+INSERT INTO `tables` VALUES (1, 'A1', 'A', 0, 4, '2020-06-05 06:37:14', '2020-06-05 09:29:27');
+INSERT INTO `tables` VALUES (2, 'A2', 'A', 0, 4, '2020-06-05 06:37:18', '2020-06-05 06:37:18');
 INSERT INTO `tables` VALUES (3, 'A3', 'A', 0, 8, '2020-06-05 06:37:23', '2020-06-05 06:37:23');
 INSERT INTO `tables` VALUES (4, 'B1', 'B', 0, 8, '2020-06-05 06:37:33', '2020-06-05 06:37:33');
 INSERT INTO `tables` VALUES (5, 'B2', 'B', 0, 8, '2020-06-05 06:37:37', '2020-06-05 06:37:37');
@@ -238,7 +232,7 @@ CREATE TABLE `users`  (
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role` int(11) NOT NULL DEFAULT 0,
+  `status` int(11) NOT NULL DEFAULT 1,
   `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `created_at` timestamp(0) NULL DEFAULT NULL,
   `updated_at` timestamp(0) NULL DEFAULT NULL,
@@ -248,7 +242,7 @@ CREATE TABLE `users`  (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (1, '/images/userDefault.png', 'Thangvm', '123@gmail.com', 'HN', '0909090909', '$2y$12$bml1zPpRhYqJBkl0e7/7.OXkxKipK1sHKmjwl8Fxj8Bt9aIGrQp46', 0, NULL, '2020-06-05 13:33:57', '2020-06-05 19:08:05');
+INSERT INTO `users` VALUES (1, '/images/userDefault.png', 'Thangvm', '123@gmail.com', 'HN', '0909090909', '$2y$12$bml1zPpRhYqJBkl0e7/7.OXkxKipK1sHKmjwl8Fxj8Bt9aIGrQp46', 1, NULL, '2020-06-05 13:33:57', '2020-06-05 13:34:00');
 
 -- ----------------------------
 -- Table structure for waits
@@ -263,6 +257,6 @@ CREATE TABLE `waits`  (
   `created_at` timestamp(0) NULL DEFAULT NULL,
   `updated_at` timestamp(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
