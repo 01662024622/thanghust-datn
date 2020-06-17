@@ -76,11 +76,21 @@
             <label class="control-label col-sm-2 requiredField" for="date">
              Date
              <span class="asteriskField">
-              *:
+              *
             </span>
           </label>
            <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
      </div>
+     <div class="form-group">
+            <label class="control-label" for="name">Percent:</label>
+            <div class="row">
+              <div class="col-xs-11">
+                
+            <input type="number" class="form-control" id="amount" placeholder="Enter percent" name="amount">
+              </div>
+              <span class="col-xs-1">%</span>
+            </div>
+          </div>
      <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       <button type="button" id="StoreBtn" class="btn btn-primary">Save changes</button>
@@ -100,7 +110,7 @@
     var date_input=$('input[name="date"]'); //our date input has the name "date"
     var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
     date_input.datepicker({
-      format: 'mm/dd/yyyy',
+      format: 'mm/dd/yyyy ',
       container: container,
       todayHighlight: true,
       autoclose: true,
@@ -137,34 +147,17 @@
       console.log($('#name').val());
       $.ajax({
         type:'post',
-        url:"{{asset('admin/categories/store')}}",
+        url:"{{asset('admin/coupons/store')}}",
         data:{
           name:$('#name').val(),
-          parent_id:$('#parent_id').val(),
-          sort_order:$('#sort_order').val(),
+          expiration_date:$('#date').val(),
+          amount:$('#amount').val(),
         },
         success:function(response){
          console.log(response);
          setTimeout(function () {
-           toastr.success('has been added');
-
-                  // 
-                },1000);
-                // var data = JSON.parse(response).data;
-                var html=
-                '<tr id="category-'+response.id+'">'+
-                '<td>'+response.id+'</td>'+
-                '<td>'+response.name+'</td>'+
-                '<td>'+response.parent_id+'</td>'+
-                '<td>'+response.sort_order+'</td>'+
-                '<td>'+
-                '<button type="button" class="btn btn-xs btn-info" data-toggle="modal" href="#showProduct"><i class="fa fa-eye" aria-hidden="true"></i></button> '+
-                ' <button type="button" class="btn btn-xs btn-warning"data-toggle="modal" onclick="getProduct('+response.id+')" href="#editProduct"><i class="fa fa-pencil" aria-hidden="true"></i></button> '+
-                ' <button type="button" class="btn btn-xs btn-danger" onclick="alDelete('+response.id+')"><i class="fa fa-trash" aria-hidden="true"></i></button>'+
-                '</td>'+
-                '</tr>';
-                $('tbody').prepend(html);
-                $('#create').modal('hide');
+           toastr.success('has been added');},1000);
+                
 
               }, error: function (xhr, ajaxOptions, thrownError) {
                 if (!checkNull(xhr.responseJSON.errors)) {

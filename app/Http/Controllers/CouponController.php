@@ -8,6 +8,7 @@ use App\Coupon;
 use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
 use App\User;
+use Carbon\Carbon;
 class CouponController extends Controller
 {
      public function index(){
@@ -53,6 +54,8 @@ class CouponController extends Controller
 
 	public function store(Request $request) {
 		$data=$request->all();
+		// return $data;
+		$data['expiration_date']=Carbon::createFromFormat('m/d/Y',$data['expiration_date'])->toDateTimeString();
 		$coupon=Coupon::create($data);
 		return $coupon;
 	}
