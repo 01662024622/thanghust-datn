@@ -46,17 +46,36 @@
             <label class="control-label col-sm-2" for="name">Name:</label>
             <input type="text" class="form-control" id="ename" placeholder="Enter name" name="name">
           </div>
+          <div class="form-group ">
+            <label class="control-label col-sm-2 requiredField" for="date">
+             Date
+             <span class="asteriskField">
+              *
+            </span>
+          </label>
+          <input class="form-control" id="edate" name="date" placeholder="MM/DD/YYYY" type="text"/>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="name">Percent:</label>
+          <div class="row">
+            <div class="col-xs-11">
 
-          <input type="hidden" name="eid" id="eid">
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" id="UpdateBtn" class="btn btn-primary">Save changes</button>
-          </div> 
-        </form>
-      </div>
+              <input type="number" class="form-control" id="eamount" placeholder="Enter percent" name="amount">
+            </div>
+            <span class="col-xs-1">%</span>
+          </div>
+        </div>
 
+        <input type="hidden" name="eid" id="eid">
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" id="UpdateBtn" class="btn btn-primary">Save changes</button>
+        </div> 
+      </form>
     </div>
+
   </div>
+</div>
 </div>
 <!-- Modal add -->
 <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -79,25 +98,25 @@
               *
             </span>
           </label>
-           <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
-     </div>
-     <div class="form-group">
-            <label class="control-label" for="name">Percent:</label>
-            <div class="row">
-              <div class="col-xs-11">
-                
-            <input type="number" class="form-control" id="amount" placeholder="Enter percent" name="amount">
-              </div>
-              <span class="col-xs-1">%</span>
+          <input class="form-control" id="date" name="date" placeholder="MM/DD/YYYY" type="text"/>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="name">Percent:</label>
+          <div class="row">
+            <div class="col-xs-11">
+
+              <input type="number" class="form-control" id="amount" placeholder="Enter percent" name="amount">
             </div>
+            <span class="col-xs-1">%</span>
           </div>
-     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      <button type="button" id="StoreBtn" class="btn btn-primary">Save changes</button>
-    </div> 
-  </form>
-</div>
-</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" id="StoreBtn" class="btn btn-primary">Save changes</button>
+        </div> 
+      </form>
+    </div>
+  </div>
 </div>
 </div>
 @endsection
@@ -121,8 +140,14 @@
 
 {{-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> --}}
 <script type="text/javascript" charset="utf-8">
-  $(function() {
-    $('#users-table').DataTable({
+  $(function () {
+    $.ajaxSetup({
+
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    var dataTable = $('#users-table').DataTable({
       processing: true,
       serverSide: true,
       ajax: '{!! route('coupons.data') !!}',
@@ -134,14 +159,7 @@
       { data: 'action', name: 'action' },
       ]
     });
-  });
-  $(function () {
-    $.ajaxSetup({
 
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      }
-    });
     $('#StoreBtn').on('click',function(e){
       e.preventDefault();
       console.log($('#name').val());
@@ -157,54 +175,40 @@
          console.log(response);
          setTimeout(function () {
            toastr.success('has been added');},1000);
-                
+         dataTable.ajax.reload();
+         $('#create').modal('hide');
 
-              }, error: function (xhr, ajaxOptions, thrownError) {
-                if (!checkNull(xhr.responseJSON.errors)) {
-                  console.log(xhr.responseJSON.errors);
-                  $('p#sperrors').remove();
-                  if(!checkNull(xhr.responseJSON.errors.name))
-                  {
-                    for (var i = 0; i < xhr.responseJSON.errors.name.length; i++) {
-                      var html='<p id="sperrors" style="color:red">'+xhr.responseJSON.errors.name[i]+'</p>';
+       }, error: function (xhr, ajaxOptions, thrownError) {
+        if (!checkNull(xhr.responseJSON.errors)) {
+          console.log(xhr.responseJSON.errors);
+          $('p#sperrors').remove();
+          if(!checkNull(xhr.responseJSON.errors.name))
+          {
+            for (var i = 0; i < xhr.responseJSON.errors.name.length; i++) {
+              var html='<p id="sperrors" style="color:red">'+xhr.responseJSON.errors.name[i]+'</p>';
 
-                      $(html).insertAfter('#name');
-                    }
-                  };
-                  if(!checkNull(xhr.responseJSON.errors.sort_order))
-                  {
-                    for (var i = 0; i < xhr.responseJSON.errors.sort_order.length; i++) {
-                      var html='<p id="sperrors" style="color:red">'+xhr.responseJSON.errors.sort_order[i]+'</p>';
-                      console.log(html);
-                      $(html).insertAfter('#sort_order');
-                    }
-                  };
-                }
-                toastr.error(xhr.responseJSON.message);
+              $(html).insertAfter('#name');
+            }
+          };
+          if(!checkNull(xhr.responseJSON.errors.sort_order))
+          {
+            for (var i = 0; i < xhr.responseJSON.errors.sort_order.length; i++) {
+              var html='<p id="sperrors" style="color:red">'+xhr.responseJSON.errors.sort_order[i]+'</p>';
+              console.log(html);
+              $(html).insertAfter('#sort_order');
+            }
+          };
+        }
+        toastr.error(xhr.responseJSON.message);
 
-              },
+      },
 
-            })
+    })
     });
 
 
-  })
 
 
-  // delete post
-
-  $(document).on('click','.btn-danger',function(){
-    var id=$(this).data('id');
-    var btn=$(this);
-    $.ajax({
-      type:'delete',
-      url:'categories/'+id,
-      success:function(response){
-        btn.parent().parent().remove();
-        toastr.success(response.message);
-      }
-    });
-  });
 
   // get data for form update
 
@@ -215,32 +219,23 @@
         console.log(id);
         $.ajax({
           type:'post',
-          url: "{{ asset('admin/categories/update') }}",
+          url: "{{ asset('admin/coupons/update') }}",
           data:{
             name:$('#ename').val(),
-            parent_id:$('#eparent_id').val(),
-            sort_order:$('#esort_order').val(),
+          expiration_date:$('#edate').val(),
+          amount:$('#eamount').val(),
             id:$('#eid').val(),
           },
           success: function(response){
             console.log(response);
             setTimeout(function () {
-              toastr.success(response.name+'has been added');
+              toastr.success(response.name+'has been updated');
 
             },1000);
 
             $('#editProduct').modal('hide');
-            var html=
-            '<td>'+response.id+'</td>'+
-            '<td>'+response.name+'</td>'+
-            '<td>'+response.parent_id+'</td>'+
-            '<td>'+response.sort_order+'</td>'+
-            '<td>'+
-            '<button type="button" class="btn btn-xs btn-info" data-toggle="modal" href="#showProduct"><i class="fa fa-eye" aria-hidden="true"></i></button> '+
-            ' <button type="button" class="btn btn-xs btn-warning"data-toggle="modal" onclick="getProduct('+response.id+')" href="#editProduct"><i class="fa fa-pencil" aria-hidden="true"></i></button> '+
-            ' <button type="button" class="btn btn-xs btn-danger" onclick="alDelete('+response.id+')"><i class="fa fa-trash" aria-hidden="true"></i></button>'+
-            '</td>';
-            $('#category-'+response.id).html(html);
+            dataTable.ajax.reload();
+
           }, error: function (xhr, ajaxOptions, thrownError) {
             if (!checkNull(xhr.responseJSON.errors)) {
               console.log(xhr.responseJSON.errors);
@@ -268,20 +263,22 @@
 
         })
       });
+        })
       function getProduct(id) {
         console.log(id);
         // $('#editPost').modal('show');
 
         $.ajax({
           type: "GET",
-          url: "categories/edit/" + id,
+          url: "/admin/coupons/edit/" + id,
 
           success: function(response)
-          { console.log(response);
+          { console.log(response); 
             $('#ename').val(response.name);
-            $('#eparent_id').val(response.parent_id);
-            $('#esort_order').val(response.sort_order);
+            $('#edate').datepicker("setDate",response.expiration_date);
+            $('#eamount').val(response.amount);
             $('#eid').val(response.id);
+
           },
           error: function (xhr, ajaxOptions, thrownError) {
             toastr.error(thrownError);
@@ -290,47 +287,6 @@
 
       }
 
-      // Delete function
-      function alDelete(id){
-        console.log(id);
-        var path = "categories/" + id;
-        swal({
-          title: "Bạn có chắc muốn xóa?",
-        // text: "Bạn sẽ không thể khôi phục lại bản ghi này!!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        cancelButtonText: "Không",
-        confirmButtonText: "Có",
-        // closeOnConfirm: false,
-      },
-      function(isConfirm) {
-        if (isConfirm) {
-          $.ajax({
-            type: "delete",
-            url: path,
-            success: function(res)
-            {
-
-              if(!res.error) {
-                toastr.success('Xóa thành công!');
-                $('#category-'+id).remove();
-                  //setTimeout(function () {
-                    //location.reload();
-                  //}, 1000)
-                }
-              },
-              error: function (xhr, ajaxOptions, thrownError) {
-                toastr.error(thrownError);
-              }
-            });
-        } else {
-          toastr.error("Thao tác xóa đã bị huỷ bỏ!");
-        }
-      });
-      };
-      function checkNull(value){
-        return (value == null || value === '');
-      }
+     
     </script>
     @endsection

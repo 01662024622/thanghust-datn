@@ -17,7 +17,7 @@ class CreateCouponsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->integer('amount');
-            $table->timestamp('expiration_date', 0);
+            $table->date('expiration_date');
             $table->timestamps();
         });
     }
