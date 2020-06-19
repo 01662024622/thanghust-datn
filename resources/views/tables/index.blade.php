@@ -56,6 +56,7 @@
               <option value="C">C</option>
               <option value="D">D</option>
             </select>
+          </div>
             <div class="form-group">
               <label class="control-label" for="phone">Member:</label>        
               <input type="text" name="member"  class="form-control" id="member" value="" placeholder="">

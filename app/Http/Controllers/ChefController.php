@@ -14,6 +14,7 @@ use DB;
 use Auth;
 use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
+use App\Coupon;
 class ChefController extends Controller
 {
 	public function index(){
@@ -77,8 +78,10 @@ class ChefController extends Controller
 	public function cashier(){
 
 		$locations= Table::select('location')->distinct()->get();
+		$coupons= Coupon::where('expiration_date',">",Carbon::now()->format('Y-m-d'))->get();
+		$tax= env('TAX_VALUE');
 		
-		return view('cashier',['locations'=>$locations,'categories'=>[],'tableinfor'=>null]);
+		return view('cashier',['locations'=>$locations,'categories'=>[],'tableinfor'=>null,'coupons'=>$coupons,'tax'=>$tax]);
 
 	}
 	

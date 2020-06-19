@@ -66,15 +66,43 @@
       </div>
       <br>
       <br>
+      @if($tax>0)
+      <div class="form-group">
+        <span style="float: left"><b>Tax: </b></span>
+        <span style="float: right"><b id="total-number">{{$tax}}%</b></span>
+      </div>
+      @endif
       <br>
-    </div>                       
-    <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      <button type="button" id="payment-proposal" class="btn btn-primary">
-      Payment</button>
+      <div class="form-group">
+        <label for="">Coupon: </label>
+        <select name="coupons" id="coupons" style="width: 100%" class="form-control" onchange="setVoucher()">
+          <option value="0"><b> <strong>Not have</strong></b> </option>
+          @foreach($coupons as $coupon)
+          <option value="{{$coupon['id']}}">{{$coupon['name']}}-{{$coupon['amount']}}%</option>
+          @endforeach
+        </select>
+      </div>
+      <br>
+
+      @if($tax>0)
+      <div class="form-group">
+        <span style="float: left"><b>Payment: </b></span>
+        <span style="float: right"><b id="total-number-payment"></span>
+        </div>
+        @endif
+        <br>
+
+        <br>
+        <br>
+        <br>
+      </div>                       
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="payment-proposal" class="btn btn-primary">
+        Payment</button>
+      </div>
     </div>
   </div>
-</div>
 </div>
 
 <input type="hidden" name="oid" id="oid" value="">
@@ -82,6 +110,23 @@
 @endsection
 @section('js')
 <script>
+  var tax={{$tax}};
+  var total_number = 0;
+  var coupon=0;
+  var total_number_payment=0;
+  var coupons =@json($coupons);
+  function setVoucher(){
+    var id = $('#coupons').val();
+    for (var i = coupons.length - 1; i >= 0; i--) {
+      if (coupons[i]["id"]==id) {
+        coupon=coupons[i]["amount"];
+        break;
+      }
+    }
+    total_number_payment=total_number*((100-tax)/100)*((100-coupon)/100)
+    $('#total-number-payment').text(parseInt(total_number_payment).toLocaleString()+" VND");
+  }
+
   $.ajaxSetup({
 
     headers: {
@@ -127,7 +172,7 @@
   function paymentEnd(id) {
 
 
-        $("#oid").val(id)
+    $("#oid").val(id)
     if(bills!=undefined){
       bills.ajax.reload();
     }else{
@@ -144,8 +189,12 @@
             for (var i = data.data.length - 1; i >= 0; i--) {
               total=total+data.data[i]['quantity']*data.data[i]['cost'];
             }
+            total_number=total;
+            total_number_payment=total_number*((100-tax)/100)*((100-coupon)/100);
             console.log(total);
             $('#total-number').text(parseInt(total).toLocaleString()+" VND");
+            $('#total-number-payment').text(parseInt(total_number_payment).toLocaleString()+" VND");
+            coupon=0;
             return data.data;
           }
         }, 
@@ -161,7 +210,7 @@
         ]
       });
     }
-     $.ajax({
+    $.ajax({
       type: "GET",
       url: '/cashier/order/'+id,
       success: function(response)
@@ -177,27 +226,27 @@
 
     
   }
- $('#payment-proposal').on('click', function(event) {
-        var id= $("#oid").val();
-        event.preventDefault();
-        $.ajax({
-          type: "POST",
-          url: "/status/table/cashier/"+id,
-          data:{
-            name:$('#name').val(),
-            phone:$('#phone').val(),
-            note:$('#note').val(),
-            status:2,
-          },
-          dataType:'json',
-          success: function(response)
-          {
-            location.reload();
-          },
-          error: function (xhr, ajaxOptions, thrownError) {
-            toastr.error(thrownError);
-          }
-        });
-      });
+  $('#payment-proposal').on('click', function(event) {
+    var id= $("#oid").val();
+    event.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: "/status/table/cashier/"+id,
+      data:{
+        name:$('#name').val(),
+        phone:$('#phone').val(),
+        note:$('#note').val(),
+        status:2,
+      },
+      dataType:'json',
+      success: function(response)
+      {
+        location.reload();
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        toastr.error(thrownError);
+      }
+    });
+  });
 </script>
 @endsection

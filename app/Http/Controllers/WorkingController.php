@@ -17,7 +17,7 @@ use Carbon\Carbon;
 class WorkingController extends Controller
 {
 	public function location($location){
-		if (Auth::user()->status==2) {
+		if (Auth::user()->role==2) {
 			return redirect('/chef');
 		}
 
