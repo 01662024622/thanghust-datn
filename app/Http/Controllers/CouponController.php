@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
 use App\User;
+use App\Coupon;
 class CouponController extends Controller
 {
      public function index(){

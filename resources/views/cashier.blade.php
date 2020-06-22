@@ -123,7 +123,7 @@
         break;
       }
     }
-    total_number_payment=total_number*((100-tax)/100)*((100-coupon)/100)
+    total_number_payment=total_number*((100+tax)/100)*((100-coupon)/100)
     $('#total-number-payment').text(parseInt(total_number_payment).toLocaleString()+" VND");
   }
 
@@ -190,7 +190,7 @@
               total=total+data.data[i]['quantity']*data.data[i]['cost'];
             }
             total_number=total;
-            total_number_payment=total_number*((100-tax)/100)*((100-coupon)/100);
+            total_number_payment=total_number*((100+tax)/100)*((100-coupon)/100);
             console.log(total);
             $('#total-number').text(parseInt(total).toLocaleString()+" VND");
             $('#total-number-payment').text(parseInt(total_number_payment).toLocaleString()+" VND");
@@ -236,6 +236,7 @@
         name:$('#name').val(),
         phone:$('#phone').val(),
         note:$('#note').val(),
+        coupon_id:$('#coupons').val(),
         status:2,
       },
       dataType:'json',
