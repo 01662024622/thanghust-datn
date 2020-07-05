@@ -75,7 +75,7 @@
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>A</b>LT</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>Rolless</span>
+      <span class="logo-lg"><b>Staff </b> Manager</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -161,12 +161,12 @@
                 </div>
                 <div class="pull-right">
 
-                 <a class="btn btn-default btn-flat" href="{{ route('admin.logout') }}"
+                 <a class="btn btn-default btn-flat" href="/logout"
                  onclick="event.preventDefault();
                  document.getElementById('logout-form').submit();">
                  {{ __('Logout') }}
                </a>
-               <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+               <form id="logout-form" action="/logout" method="POST" style="display: none;">
                 @csrf
               </form>
             </div>

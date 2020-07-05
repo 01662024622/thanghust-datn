@@ -19,7 +19,7 @@ class TableController extends Controller
     }
 
     public function anyData(){
-        $tables = Table::select('tables.*');
+        $tables = Table::select('tables.*')->orderByDesc('code');
         return Datatables::of($tables)
         ->addColumn('action', function ($category) {
             return'

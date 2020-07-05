@@ -25,7 +25,7 @@ class ChefController extends Controller
 
 	}
 	public function dataChef(){
-		$waits = Wait::select('waits.*');
+		$waits = Wait::select('waits.*')->orderByDesc('created_at');
 		
 		return Datatables::of($waits)
 		->addColumn('image', function ($data) {
