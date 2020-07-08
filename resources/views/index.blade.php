@@ -263,11 +263,7 @@
 
    var recordsTotal=0;
    function getDataBill() {
-    if(recordsTotal==0){
-      $('#payment-proposal').show()
-    }else {
-      $('#payment-proposal').hide()
-    }
+    
 
 
     if(bills!=undefined){
@@ -281,8 +277,7 @@
           type: "GET",
           datatype: "json",
           dataSrc: function (data) {
-            if (data.recordsTotal == 0)
-             $('#payment-proposal').hide()
+            
            return data.data;
          }
        }, 
